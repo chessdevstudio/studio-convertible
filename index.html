@@ -4,7 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Studio Convertible — Landing pages qui convertissent pour les PME</title>
+<meta name="description" content="Studio Convertible conçoit, code et héberge des landing pages sur-mesure pour les PME, artisans et indépendants qui veulent transformer leurs visiteurs en clients.">
+<link rel="canonical" href="https://www.studioconvertible.fr/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Studio Convertible — Landing pages qui convertissent pour les PME">
+<meta property="og:description" content="Design, développement et hébergement de landing pages sur-mesure pour les PME.">
+<meta property="og:image" content="https://www.studioconvertible.fr/og-studio-convertible.png">
+<meta property="og:url" content="https://www.studioconvertible.fr/">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Studio Convertible — Landing pages qui convertissent pour les PME">
+<meta name="twitter:image" content="https://www.studioconvertible.fr/og-studio-convertible.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+<link rel="apple-touch-icon" href="favicon-180.png">
+<link rel="manifest" href="manifest.json">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Studio Convertible",
+  "url": "https://www.studioconvertible.fr/",
+  "logo": "https://www.studioconvertible.fr/favicon-512.png",
+  "description": "Agence spécialisée en landing pages sur-mesure pour PME, artisans et indépendants.",
+  "areaServed": "FR",
+  "sameAs": []
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -399,7 +428,7 @@
           <p>Un message clair, une offre lisible en 5 secondes, un parcours qui mène droit au contact.</p>
           <div class="stat">+180% <span style="font-size:1rem; opacity:0.7; font-weight:400;">de demandes de devis</span></div>
         </div>
-        <div class="compare-handle" id="handle">
+        <div class="compare-handle" id="handle" role="slider" tabindex="0" aria-label="Comparer avant et après" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
           <div class="compare-grip">⇔</div>
         </div>
       </div>
@@ -551,9 +580,25 @@
 <footer>
   <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:12px;">
     <span>Studio Convertible — Landing pages pour PME</span>
-    <span>Fécamp · Toulouse · à distance partout en France</span>
+    <span>Fécamp · Toulouse · à distance partout en France · <a href="legal.html" style="color:inherit;">Mentions légales</a></span>
   </div>
 </footer>
+
+<div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#14161A; color:#FAFAF6; padding:18px 24px; z-index:100; font-size:0.88rem; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
+  <span>Ce site n'utilise aucun cookie de suivi pour le moment. Ce bandeau s'activera automatiquement si un outil de mesure d'audience est ajouté. <a href="legal.html" style="color:#C8F034;">En savoir plus</a></span>
+  <button id="cookie-ok" style="background:#C8F034; color:#14161A; border:none; padding:9px 18px; border-radius:100px; font-weight:600; cursor:pointer; font-size:0.85rem;">Compris</button>
+</div>
+<script>
+  (function(){
+    if(!localStorage.getItem('cookieNoticeSeen')){
+      document.getElementById('cookie-banner').style.display = 'flex';
+    }
+    document.getElementById('cookie-ok').addEventListener('click', function(){
+      localStorage.setItem('cookieNoticeSeen', '1');
+      document.getElementById('cookie-banner').style.display = 'none';
+    });
+  })();
+</script>
 
 <script>
   const compare = document.getElementById('compare');
@@ -567,7 +612,20 @@
     pct = Math.max(4, Math.min(96, pct));
     afterPane.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
     handle.style.left = pct + '%';
+    handle.setAttribute('aria-valuenow', Math.round(pct));
   }
+
+  handle.addEventListener('keydown', e => {
+    const rect = compare.getBoundingClientRect();
+    let current = parseFloat(handle.style.left) || 50;
+    if(e.key === 'ArrowLeft'){ current = Math.max(4, current - 5); }
+    else if(e.key === 'ArrowRight'){ current = Math.min(96, current + 5); }
+    else { return; }
+    e.preventDefault();
+    afterPane.style.clipPath = `inset(0 ${100-current}% 0 0)`;
+    handle.style.left = current + '%';
+    handle.setAttribute('aria-valuenow', Math.round(current));
+  });
 
   compare.addEventListener('mousedown', e => { dragging = true; setPosition(e.clientX); });
   window.addEventListener('mousemove', e => { if(dragging) setPosition(e.clientX); });

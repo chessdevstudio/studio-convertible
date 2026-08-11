@@ -4,7 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Traiteur Événements d'Entreprise — Toulouse</title>
+<meta name="description" content="Traiteur pour événements d'entreprise à Toulouse : séminaires, cocktails, repas de direction. Devis instantané en ligne, réponse sous 24h.">
+<link rel="canonical" href="https://www.studioconvertible.fr/traiteur-toulouse.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Traiteur événements d'entreprise à Toulouse">
+<meta property="og:description" content="Séminaires, cocktails, repas de direction : une cuisine soignée pour vos événements pro.">
+<meta property="og:image" content="https://www.studioconvertible.fr/og-traiteur-toulouse.png">
+<meta property="og:url" content="https://www.studioconvertible.fr/traiteur-toulouse.html">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Traiteur événements d'entreprise à Toulouse">
+<meta name="twitter:image" content="https://www.studioconvertible.fr/og-traiteur-toulouse.png">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="favicon-180.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Maison Traiteur",
+  "description": "Traiteur spécialisé dans les événements d'entreprise à Toulouse : séminaires, cocktails, repas de direction.",
+  "areaServed": "Toulouse",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Toulouse",
+    "addressRegion": "Occitanie",
+    "addressCountry": "FR"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -143,7 +173,7 @@
   <section class="hero">
     <div class="wrap">
       <div class="eyebrow">Traiteur événements d'entreprise — Toulouse</div>
-      <h1>Vos événements professionnels méritent une table à la hauteur.</h1>
+      <h1>Traiteur événements d'entreprise à Toulouse. Vos réceptions méritent une table à la hauteur.</h1>
       <p class="hero-sub">Séminaires, cocktails, repas de direction : une cuisine soignée et un service impeccable pour les entreprises toulousaines qui reçoivent leurs clients et leurs équipes.</p>
       <div class="hero-actions">
         <a href="#devis" class="btn-gold">Demander un devis instantané</a>
@@ -188,9 +218,9 @@
           <div class="calc-field">
             <label>Formule</label>
             <div class="formules">
-              <button class="f-btn active" data-price="22">Cocktail</button>
-              <button class="f-btn" data-price="38">Repas assis</button>
-              <button class="f-btn" data-price="55">Prestige</button>
+              <button class="f-btn active" data-price="22" aria-pressed="true">Cocktail</button>
+              <button class="f-btn" data-price="38" aria-pressed="false">Repas assis</button>
+              <button class="f-btn" data-price="55" aria-pressed="false">Prestige</button>
             </div>
           </div>
           <div class="calc-field">
@@ -245,8 +275,24 @@
 </main>
 
 <footer>
-  Maison Traiteur — Toulouse · Exemple de landing page réalisée par Studio Convertible
+  Maison Traiteur — Toulouse · Exemple de landing page réalisée par Studio Convertible · <a href="legal.html" style="color:inherit;">Mentions légales</a>
 </footer>
+
+<div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#0C1512; color:#F3EDE1; padding:16px 24px; z-index:60; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-top:1px solid rgba(243,237,225,0.14);">
+  <span>Aucun cookie de suivi n'est utilisé pour le moment. <a href="legal.html" style="color:#C9A227;">En savoir plus</a></span>
+  <button id="cookie-ok" style="background:#C9A227; color:#101B17; border:none; padding:8px 16px; border-radius:2px; font-weight:600; cursor:pointer; font-size:0.82rem;">Compris</button>
+</div>
+<script>
+  (function(){
+    if(!localStorage.getItem('cookieNoticeSeen')){
+      document.getElementById('cookie-banner').style.display = 'flex';
+    }
+    document.getElementById('cookie-ok').addEventListener('click', function(){
+      localStorage.setItem('cookieNoticeSeen', '1');
+      document.getElementById('cookie-banner').style.display = 'none';
+    });
+  })();
+</script>
 
 <script>
   const slider = document.getElementById('guestSlider');
@@ -267,8 +313,9 @@
   slider.addEventListener('input', update);
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
+      buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed','true');
       pricePerGuest = parseInt(btn.dataset.price, 10);
       update();
     });
