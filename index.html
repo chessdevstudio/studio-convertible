@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Convertible — Landing pages qui convertissent pour les PME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAFAF6;
+    --bg-alt:#F1EFE6;
+    --ink:#14161A;
+    --ink-soft:#5B5D57;
+    --indigo:#3B2FC9;
+    --indigo-deep:#241C8A;
+    --lime:#C8F034;
+    --coral:#FF6B49;
+    --line:#E4E1D4;
+    --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{
+    font-family:'Instrument Sans', sans-serif;
+    letter-spacing:-0.02em;
+    line-height:1.02;
+  }
+  .mono{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:-0.02em;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{
+    max-width:1160px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+  :focus-visible{
+    outline:3px solid var(--indigo);
+    outline-offset:3px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  /* NAV */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(250,250,246,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 32px;
+    max-width:1160px; margin:0 auto;
+  }
+  .logo{
+    font-family:'Instrument Sans', sans-serif;
+    font-weight:700;
+    font-size:1.15rem;
+  }
+  .logo span{color:var(--indigo);}
+  .nav-links{display:flex; gap:32px; font-size:0.92rem; font-weight:500;}
+  .nav-links a{opacity:0.75; transition:opacity .2s;}
+  .nav-links a:hover{opacity:1;}
+  .nav-cta{
+    background:var(--ink); color:var(--bg);
+    padding:10px 20px; border-radius:100px;
+    font-size:0.88rem; font-weight:600;
+  }
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  /* HERO */
+  .hero{
+    padding:88px 0 60px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--indigo);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:''; width:8px; height:8px; border-radius:50%;
+    background:var(--lime);
+    box-shadow:0 0 0 4px rgba(200,240,52,0.25);
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 5.6vw, 4.4rem);
+    font-weight:700;
+    max-width:850px;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--indigo);
+    position:relative;
+  }
+  .hero-sub{
+    margin-top:26px;
+    font-size:1.15rem;
+    color:var(--ink-soft);
+    max-width:540px;
+    line-height:1.55;
+  }
+  .hero-actions{
+    margin-top:36px;
+    display:flex; gap:16px; flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:var(--ink); color:var(--bg);
+    padding:15px 28px; border-radius:100px;
+    font-weight:600; font-size:0.95rem;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .btn-primary:hover{background:var(--indigo); transform:translateY(-2px);}
+  .btn-ghost{
+    padding:15px 24px; border-radius:100px;
+    border:1px solid var(--line);
+    font-weight:600; font-size:0.95rem;
+    transition:border-color .2s ease;
+  }
+  .btn-ghost:hover{border-color:var(--ink);}
+
+  /* SIGNATURE: SLIDER */
+  .compare{
+    margin-top:64px;
+    position:relative;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    box-shadow:0 30px 60px -30px rgba(20,22,26,0.25);
+    aspect-ratio:16/8;
+    cursor:ew-resize;
+    user-select:none;
+    background:var(--bg-alt);
+  }
+  .compare-pane{
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:0 8%;
+  }
+  .pane-before{
+    background:#EDEBE1;
+  }
+  .pane-before .tag{color:#8A8C82;}
+  .pane-before h3{color:#8A8C82; font-weight:600; font-size:1.6rem;}
+  .pane-before p{color:#A5A69C; margin-top:10px; font-size:0.95rem; max-width:320px;}
+  .pane-after{
+    background:linear-gradient(135deg, var(--indigo) 0%, var(--indigo-deep) 100%);
+    color:white;
+    clip-path:inset(0 50% 0 0);
+  }
+  .pane-after .tag{color:var(--lime);}
+  .pane-after h3{font-size:1.6rem; font-weight:700;}
+  .pane-after p{opacity:0.85; margin-top:10px; font-size:0.95rem; max-width:320px;}
+  .pane-after .stat{
+    margin-top:18px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:2.2rem; font-weight:600;
+    color:var(--lime);
+  }
+  .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em;
+    margin-bottom:8px; display:block;
+  }
+  .compare-handle{
+    position:absolute; top:0; bottom:0; left:50%;
+    width:3px; background:white;
+    transform:translateX(-50%);
+    box-shadow:0 0 0 1px rgba(0,0,0,0.06);
+  }
+  .compare-grip{
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:44px; height:44px; border-radius:50%;
+    background:white; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem;
+    box-shadow:0 8px 20px rgba(20,22,26,0.18);
+  }
+  .compare-caption{
+    text-align:center; margin-top:14px; font-size:0.85rem; color:var(--ink-soft);
+  }
+
+  /* SECTIONS */
+  section{padding:100px 0;}
+  .section-head{max-width:600px; margin-bottom:56px;}
+  .section-head .eyebrow{margin-bottom:16px;}
+  .section-head h2{font-size:clamp(1.8rem, 3.4vw, 2.6rem); font-weight:700;}
+  .section-head p{margin-top:16px; color:var(--ink-soft); font-size:1.05rem; line-height:1.6;}
+
+  /* PORTFOLIO */
+  .portfolio-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  @media (max-width:900px){ .portfolio-grid{grid-template-columns:1fr;} }
+  .p-card{
+    border-radius:var(--radius);
+    overflow:hidden;
+    border:1px solid var(--line);
+    background:white;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .p-card:hover{transform:translateY(-6px); box-shadow:0 24px 40px -24px rgba(20,22,26,0.2);}
+  .p-thumb{
+    aspect-ratio:4/3;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .p-thumb::after{
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(circle at 80% 20%, rgba(255,255,255,0.18), transparent 60%);
+  }
+  .thumb-1{background:linear-gradient(160deg,#FF6B49,#C23B1F);}
+  .thumb-2{background:linear-gradient(160deg,#3B2FC9,#181155);}
+  .thumb-3{background:linear-gradient(160deg,#1F2421,#4A554D);}
+  .p-thumb .k{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem; color:rgba(255,255,255,0.75);
+    text-transform:uppercase; letter-spacing:0.08em;
+  }
+  .p-thumb .biglabel{
+    font-family:'Instrument Sans', sans-serif;
+    font-size:1.5rem; font-weight:700; color:white;
+  }
+  .p-body{padding:20px 22px 24px;}
+  .p-body h3{font-size:1.1rem; font-weight:600;}
+  .p-body p{margin-top:8px; color:var(--ink-soft); font-size:0.92rem; line-height:1.5;}
+  .p-meta{
+    margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;
+  }
+  .chip{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    background:var(--bg-alt);
+    padding:5px 10px; border-radius:100px;
+    color:var(--ink-soft);
+  }
+  .p-link{
+    margin-top:16px; display:inline-flex; align-items:center; gap:6px;
+    font-size:0.88rem; font-weight:600; color:var(--indigo);
+  }
+
+  /* PROCESS */
+  .process-bg{background:var(--ink); color:var(--bg);}
+  .process-bg .eyebrow{color:var(--lime);}
+  .process-bg .section-head p{color:rgba(250,250,246,0.65);}
+  .process-list{display:flex; flex-direction:column;}
+  .process-item{
+    display:grid; grid-template-columns:80px 1fr 1fr;
+    gap:32px;
+    padding:32px 0;
+    border-top:1px solid rgba(250,250,246,0.14);
+    align-items:start;
+  }
+  .process-item:last-child{border-bottom:1px solid rgba(250,250,246,0.14);}
+  @media (max-width:760px){
+    .process-item{grid-template-columns:50px 1fr; }
+    .process-item .p-desc{grid-column:2/3;}
+  }
+  .process-num{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--lime); font-size:1rem;
+  }
+  .process-item h3{font-size:1.25rem; font-weight:600;}
+  .process-item p{color:rgba(250,250,246,0.65); font-size:0.95rem; line-height:1.6;}
+
+  /* STACK / SKILLS STRIP */
+  .stack{
+    display:flex; flex-wrap:wrap; gap:12px;
+    margin-top:20px;
+  }
+  .stack span{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    border:1px solid rgba(250,250,246,0.25);
+    padding:8px 14px; border-radius:100px;
+    color:rgba(250,250,246,0.85);
+  }
+
+  /* WHY */
+  .why-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:28px;
+  }
+  @media (max-width:900px){ .why-grid{grid-template-columns:1fr;} }
+  .why-card{
+    padding:30px; border-radius:var(--radius);
+    background:var(--bg-alt); border:1px solid var(--line);
+  }
+  .why-card .num{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--indigo); font-size:0.85rem; margin-bottom:14px; display:block;
+  }
+  .why-card h3{font-size:1.15rem; font-weight:600; margin-bottom:10px;}
+  .why-card p{color:var(--ink-soft); font-size:0.92rem; line-height:1.55;}
+
+  /* CTA */
+  .cta{
+    background:linear-gradient(135deg, var(--indigo) 0%, var(--indigo-deep) 100%);
+    color:white;
+    border-radius:24px;
+    padding:72px 48px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .cta::before{
+    content:''; position:absolute; width:400px; height:400px;
+    background:var(--lime); opacity:0.25; filter:blur(90px);
+    top:-120px; right:-80px; border-radius:50%;
+  }
+  .cta h2{font-size:clamp(1.8rem,4vw,2.6rem); font-weight:700; max-width:600px; margin:0 auto;}
+  .cta p{margin-top:16px; opacity:0.8; max-width:460px; margin-left:auto; margin-right:auto;}
+  .cta .btn-primary{background:white; color:var(--indigo); margin-top:30px;}
+  .cta .btn-primary:hover{background:var(--lime); color:var(--ink);}
+
+  footer{
+    padding:40px 0 60px;
+    display:flex; justify-content:space-between; align-items:center;
+    color:var(--ink-soft); font-size:0.85rem;
+    border-top:1px solid var(--line);
+    flex-wrap:wrap; gap:12px;
+  }
+
+  /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
+  @media (max-width:600px){
+    .wrap{padding:0 20px;}
+    nav{padding:16px 20px;}
+    .hero{padding:44px 0 36px;}
+    .hero-actions{flex-direction:column; align-items:stretch;}
+    .hero-actions a{text-align:center;}
+    .compare{aspect-ratio:3/4; margin-top:44px;}
+    .compare-pane{padding:24px 20px;}
+    .pane-before h3, .pane-after h3{font-size:1.15rem;}
+    .pane-after .stat{font-size:1.6rem; margin-top:12px;}
+    section{padding:56px 0;}
+    .section-head{margin-bottom:36px;}
+    .process-item{padding:24px 0;}
+    .why-card, .p-body{padding:22px;}
+    .cta{padding:48px 24px;}
+    footer{flex-direction:column; align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">studio<span>convertible</span></div>
+    <div class="nav-links">
+      <a href="#portfolio">Portfolio</a>
+      <a href="#process">Méthode</a>
+      <a href="#why">Pourquoi</a>
+    </div>
+    <a href="#cta" class="nav-cta">Discutons de votre projet</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Landing pages pour PME</div>
+      <h1>Votre site ne doit pas être joli. <em>Il doit convertir.</em></h1>
+      <p class="hero-sub">Je conçois, code et héberge des landing pages sur-mesure pour les artisans, indépendants et petites entreprises qui veulent transformer leurs visiteurs en clients — pas juste exister en ligne.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn-primary">Demander un audit gratuit →</a>
+        <a href="#portfolio" class="btn-ghost">Voir le portfolio</a>
+      </div>
+
+      <div class="compare" id="compare">
+        <div class="compare-pane pane-before">
+          <span class="tag">Avant</span>
+          <h3>Site vitrine générique</h3>
+          <p>Un template non personnalisé, un message flou, aucun appel à l'action clair. Le visiteur repart sans agir.</p>
+        </div>
+        <div class="compare-pane pane-after" id="afterPane">
+          <span class="tag">Après — Studio Convertible</span>
+          <h3>Landing page pensée pour convertir</h3>
+          <p>Un message clair, une offre lisible en 5 secondes, un parcours qui mène droit au contact.</p>
+          <div class="stat">+180% <span style="font-size:1rem; opacity:0.7; font-weight:400;">de demandes de devis</span></div>
+        </div>
+        <div class="compare-handle" id="handle">
+          <div class="compare-grip">⇔</div>
+        </div>
+      </div>
+      <p class="compare-caption">Faites glisser pour comparer — chiffre issu du cas client "coach sportif à domicile"</p>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Réalisations</div>
+        <h2>Trois métiers, trois logiques de conversion différentes</h2>
+        <p>Chaque PME a un client type, une urgence et un cycle de décision qui lui sont propres. Voici comment ça se traduit en design, en copywriting et en architecture technique.</p>
+      </div>
+      <div class="portfolio-grid">
+
+        <div class="p-card">
+          <div class="p-thumb thumb-1">
+            <span class="k">Urgence 24/7</span>
+            <span class="biglabel">Plomberie<br>Fécamp</span>
+          </div>
+          <div class="p-body">
+            <h3>Plombier — intervention d'urgence</h3>
+            <p>Design rouge/orange pensé pour l'urgence : numéro cliquable en un geste, temps d'intervention affiché, zéro friction.</p>
+            <div class="p-meta">
+              <span class="chip">Mobile-first</span>
+              <span class="chip">Click-to-call</span>
+              <span class="chip">Hébergement rapide</span>
+            </div>
+            <a href="plombier-fecamp.html" class="p-link">Voir le site →</a>
+          </div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-thumb thumb-2">
+            <span class="k">Storytelling</span>
+            <span class="biglabel">Coaching<br>sportif</span>
+          </div>
+          <div class="p-body">
+            <h3>Coach sportif à domicile</h3>
+            <p>Narration en transformation avant/après, preuve sociale et prise de rendez-vous intégrée pour raccourcir la décision.</p>
+            <div class="p-meta">
+              <span class="chip">Réservation en ligne</span>
+              <span class="chip">Témoignages</span>
+              <span class="chip">Design émotionnel</span>
+            </div>
+            <a href="coach-sportif-fecamp.html" class="p-link">Voir le site →</a>
+          </div>
+        </div>
+
+        <div class="p-card">
+          <div class="p-thumb thumb-3">
+            <span class="k">Premium B2B</span>
+            <span class="biglabel">Traiteur<br>entreprise</span>
+          </div>
+          <div class="p-body">
+            <h3>Traiteur événements d'entreprise</h3>
+            <p>Positionnement premium, devis en ligne et galerie soignée pour rassurer des décideurs qui comparent plusieurs prestataires.</p>
+            <div class="p-meta">
+              <span class="chip">Devis instantané</span>
+              <span class="chip">Galerie photo</span>
+              <span class="chip">SEO local Toulouse</span>
+            </div>
+            <a href="traiteur-toulouse.html" class="p-link">Voir le site →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="process" class="process-bg">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Méthode</div>
+        <h2>De l'audit à la mise en ligne, tout est maîtrisé en interne</h2>
+        <p>Pas d'intermédiaire, pas de sous-traitance : design, développement et hébergement sont gérés de bout en bout.</p>
+      </div>
+      <div class="process-list">
+        <div class="process-item">
+          <span class="process-num">01</span>
+          <h3>Audit &amp; stratégie</h3>
+          <p class="p-desc">Analyse de votre activité, de votre client type et de ce qui bloque la conversion aujourd'hui.</p>
+        </div>
+        <div class="process-item">
+          <span class="process-num">02</span>
+          <h3>Design sur-mesure</h3>
+          <p class="p-desc">Une identité visuelle unique pour votre métier — jamais un template recyclé d'un autre client.</p>
+        </div>
+        <div class="process-item">
+          <span class="process-num">03</span>
+          <h3>Développement</h3>
+          <p class="p-desc">Code propre, rapide et responsive, pensé pour le référencement local et la performance mobile.</p>
+        </div>
+        <div class="process-item">
+          <span class="process-num">04</span>
+          <h3>Hébergement &amp; suivi</h3>
+          <p class="p-desc">Mise en ligne, nom de domaine, certificat sécurisé et suivi des performances après lancement.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <span>HTML / CSS / JS</span>
+        <span>Hébergement &amp; DNS</span>
+        <span>Nom de domaine</span>
+        <span>SEO local</span>
+        <span>Suivi analytics</span>
+        <span>Maintenance</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Pourquoi une landing page dédiée</div>
+        <h2>Un site "vitrine" et une landing page qui convertit, ce n'est pas le même métier</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <span class="num">01</span>
+          <h3>Un seul objectif par page</h3>
+          <p>Contrairement à un site vitrine qui disperse l'attention, chaque page est construite autour d'une seule action à obtenir.</p>
+        </div>
+        <div class="why-card">
+          <span class="num">02</span>
+          <h3>Pensée pour votre client type</h3>
+          <p>Le ton, les preuves et le parcours s'adaptent à qui décide chez vous : particulier pressé ou acheteur B2B qui compare.</p>
+        </div>
+        <div class="why-card">
+          <span class="num">03</span>
+          <h3>Mesurable, pas seulement joli</h3>
+          <p>Chaque projet inclut un suivi du taux de conversion réel, pas seulement du trafic ou des vues.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cta">
+    <div class="wrap">
+      <div class="cta">
+        <h2>Prêt à transformer vos visiteurs en clients ?</h2>
+        <p>Un audit gratuit de 20 minutes pour identifier ce qui freine la conversion sur votre présence actuelle.</p>
+        <a href="mailto:contact@studioconvertible.fr" class="btn-primary">Réserver mon audit gratuit →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:12px;">
+    <span>Studio Convertible — Landing pages pour PME</span>
+    <span>Fécamp · Toulouse · à distance partout en France</span>
+  </div>
+</footer>
+
+<script>
+  const compare = document.getElementById('compare');
+  const afterPane = document.getElementById('afterPane');
+  const handle = document.getElementById('handle');
+  let dragging = false;
+
+  function setPosition(clientX){
+    const rect = compare.getBoundingClientRect();
+    let pct = ((clientX - rect.left) / rect.width) * 100;
+    pct = Math.max(4, Math.min(96, pct));
+    afterPane.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+    handle.style.left = pct + '%';
+  }
+
+  compare.addEventListener('mousedown', e => { dragging = true; setPosition(e.clientX); });
+  window.addEventListener('mousemove', e => { if(dragging) setPosition(e.clientX); });
+  window.addEventListener('mouseup', () => dragging = false);
+
+  compare.addEventListener('touchstart', e => { dragging = true; setPosition(e.touches[0].clientX); }, {passive:true});
+  compare.addEventListener('touchmove', e => { if(dragging) setPosition(e.touches[0].clientX); }, {passive:true});
+  window.addEventListener('touchend', () => dragging = false);
+
+  // subtle auto-hint animation on load
+  window.addEventListener('load', () => {
+    let t = 0;
+    const hint = setInterval(() => {
+      t += 1;
+      const pct = 50 + Math.sin(t/3) * 8;
+      afterPane.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+      handle.style.left = pct + '%';
+      if(t > 18){ clearInterval(hint); setPosition(window.innerWidth/2 + compare.getBoundingClientRect().left - compare.getBoundingClientRect().left); afterPane.style.clipPath = 'inset(0 50% 0 0)'; handle.style.left='50%';}
+    }, 90);
+  });
+</script>
+
+</body>
+</html>

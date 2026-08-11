@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dépannage Plomberie Fécamp — Intervention en moins d'1h</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFF7F2;
+    --ink:#1C0F0B;
+    --red:#E63B22;
+    --red-deep:#9E2312;
+    --amber:#FFB238;
+    --line:#F0D9CC;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Barlow', sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased; padding-bottom:76px;}
+  h1,h2,h3{font-family:'Archivo Black', sans-serif; line-height:1.05; text-transform:uppercase;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  :focus-visible{outline:3px solid var(--red-deep); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important;}}
+
+  .stripe{
+    background:repeating-linear-gradient(-45deg, var(--red) 0 18px, var(--amber) 18px 36px);
+    height:10px;
+  }
+
+  header{padding:22px 0; border-bottom:1px solid var(--line);}
+  nav{display:flex; justify-content:space-between; align-items:center; max-width:1080px; margin:0 auto; padding:0 28px;}
+  .logo{font-family:'Archivo Black', sans-serif; font-size:1.05rem; text-transform:uppercase;}
+  .logo span{color:var(--red);}
+  .status{
+    display:flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:0.78rem;
+    background:#FDECE7; color:var(--red-deep);
+    padding:8px 14px; border-radius:100px;
+  }
+  .status::before{content:''; width:8px; height:8px; border-radius:50%; background:#1EA85C; animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.3;}}
+
+  .hero{padding:64px 0 40px;}
+  .hero .eyebrow{font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--red-deep); letter-spacing:0.08em; margin-bottom:16px;}
+  .hero h1{font-size:clamp(2.2rem, 6vw, 3.6rem); max-width:760px;}
+  .hero h1 .hl{color:var(--red);}
+  .hero-sub{margin-top:22px; font-size:1.15rem; color:#5C4137; max-width:520px; line-height:1.5;}
+
+  .call-block{
+    margin-top:34px;
+    display:flex; gap:16px; flex-wrap:wrap; align-items:center;
+  }
+  .btn-call{
+    background:var(--red); color:white;
+    font-family:'Archivo Black', sans-serif;
+    font-size:1.1rem; text-transform:uppercase;
+    padding:20px 32px; border-radius:10px;
+    display:flex; align-items:center; gap:12px;
+    box-shadow:0 14px 30px -12px rgba(230,59,34,0.55);
+    transition:transform .15s ease;
+  }
+  .btn-call:hover{transform:translateY(-2px);}
+  .btn-call small{display:block; font-family:'Barlow',sans-serif; font-weight:500; text-transform:none; font-size:0.7rem; opacity:0.85;}
+  .call-note{font-size:0.88rem; color:#7A5A4C;}
+
+  .timer-badges{
+    margin-top:40px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:2px;
+    background:var(--ink); border-radius:12px; overflow:hidden;
+  }
+  .timer-badges div{background:var(--ink); color:white; padding:20px; text-align:center;}
+  .timer-badges .num{font-family:'Archivo Black', sans-serif; font-size:1.8rem; color:var(--amber);}
+  .timer-badges .lbl{font-family:'JetBrains Mono', monospace; font-size:0.68rem; text-transform:uppercase; opacity:0.75; margin-top:4px;}
+  @media (max-width:640px){.timer-badges{grid-template-columns:1fr;}}
+
+  section{padding:70px 0;}
+  .section-head{margin-bottom:38px;}
+  .section-head .eyebrow{font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--red-deep); margin-bottom:12px;}
+  .section-head h2{font-size:clamp(1.6rem,3.4vw,2.2rem);}
+
+  .services{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media (max-width:840px){.services{grid-template-columns:1fr;}}
+  .service{background:white; border:1px solid var(--line); border-radius:12px; padding:26px; border-top:4px solid var(--red);}
+  .service h3{font-family:'Barlow', sans-serif; font-weight:700; text-transform:none; font-size:1.05rem;}
+  .service p{margin-top:10px; font-size:0.92rem; color:#6B4E42; line-height:1.5;}
+
+  .zone-band{background:var(--red-deep); color:white; padding:50px 0;}
+  .zone-band .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;}
+  .zone-band h2{font-size:1.5rem;}
+  .zone-list{display:flex; gap:10px; flex-wrap:wrap;}
+  .zone-list span{font-family:'JetBrains Mono', monospace; font-size:0.78rem; border:1px solid rgba(255,255,255,0.35); padding:7px 12px; border-radius:100px;}
+
+  .testimonial{background:white; border:1px solid var(--line); border-radius:14px; padding:34px; max-width:640px;}
+  .testimonial p{font-size:1.15rem; line-height:1.5;}
+  .testimonial .who{margin-top:16px; font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--red-deep);}
+
+  .sticky-cta{
+    position:fixed; bottom:0; left:0; right:0;
+    background:var(--ink); color:white;
+    padding:14px 20px; display:flex; justify-content:space-between; align-items:center;
+    z-index:50;
+  }
+  .sticky-cta span{font-family:'JetBrains Mono', monospace; font-size:0.8rem;}
+  .sticky-cta a{background:var(--red); padding:10px 18px; border-radius:8px; font-family:'Archivo Black', sans-serif; font-size:0.85rem;}
+
+  footer{padding:30px 0; text-align:center; font-size:0.82rem; color:#8A6A5C;}
+
+  /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
+  @media (max-width:600px){
+    .wrap{padding:0 20px;}
+    nav{padding:0 20px;}
+    .hero{padding:44px 0 30px;}
+    .call-block{flex-direction:column; align-items:stretch;}
+    .btn-call{justify-content:center; text-align:center; padding:18px 20px;}
+    .call-note{text-align:center;}
+    .timer-badges .num{font-size:1.5rem;}
+    section{padding:50px 0;}
+    .zone-band{padding:40px 0;}
+    .zone-band .wrap{flex-direction:column; align-items:flex-start;}
+    .testimonial{padding:26px;}
+    .sticky-cta{padding:12px 16px; flex-direction:column; gap:8px; text-align:center;}
+    .sticky-cta a{width:100%; text-align:center;}
+    body{padding-bottom:96px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="stripe"></div>
+<header>
+  <nav>
+    <div class="logo">Fécamp<span>Plomberie</span></div>
+    <div class="status">Disponible maintenant</div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Fécamp &amp; environs — intervention 7j/7</div>
+      <h1>Fuite d'eau ?<br><span class="hl">On est chez vous en moins d'1h.</span></h1>
+      <p class="hero-sub">Plombier local à Fécamp, disponible pour toute urgence : fuite, canalisation bouchée, chauffe-eau en panne. Devis clair avant intervention, aucune surprise sur la facture.</p>
+
+      <div class="call-block">
+        <a href="tel:0235000000" class="btn-call">
+          📞 02 35 00 00 00
+          <small>appel direct, réponse immédiate</small>
+        </a>
+        <span class="call-note">Déplacement offert sur Fécamp intra-muros</span>
+      </div>
+
+      <div class="timer-badges">
+        <div><div class="num">&lt; 60</div><div class="lbl">minutes en moyenne</div></div>
+        <div><div class="num">7j/7</div><div class="lbl">y compris jours fériés</div></div>
+        <div><div class="num">0€</div><div class="lbl">devis &amp; déplacement</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Interventions</div>
+        <h2>Ce qu'on répare aujourd'hui</h2>
+      </div>
+      <div class="services">
+        <div class="service"><h3>Fuite d'eau</h3><p>Détection et réparation rapide, sans dégât supplémentaire sur vos murs ou sols.</p></div>
+        <div class="service"><h3>Canalisation bouchée</h3><p>Débouchage haute pression, évier, douche, WC — intervention propre et rapide.</p></div>
+        <div class="service"><h3>Chauffe-eau en panne</h3><p>Diagnostic sur place et remplacement si nécessaire, avec pièces disponibles en stock.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="zone-band">
+    <div class="wrap">
+      <h2>Zone d'intervention</h2>
+      <div class="zone-list">
+        <span>Fécamp</span><span>Yport</span><span>Saint-Léonard</span><span>Valmont</span><span>Criquebeuf-en-Caux</span>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Avis client</div>
+        <h2>Ils nous ont appelés en urgence</h2>
+      </div>
+      <div class="testimonial">
+        <p>"Fuite sous l'évier un dimanche soir, quelqu'un était là 40 minutes après mon appel. Travail propre, prix annoncé au téléphone respecté."</p>
+        <div class="who">— Client à Fécamp, réparation fuite d'eau</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="sticky-cta">
+  <span class="mono">Besoin d'un plombier maintenant ?</span>
+  <a href="tel:0235000000">Appeler →</a>
+</div>
+
+<footer>
+  Fécamp Plomberie — SIRET fictif à titre de démonstration · Exemple de landing page réalisée par Studio Convertible
+</footer>
+
+</body>
+</html>

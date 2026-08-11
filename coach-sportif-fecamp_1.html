@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coaching Sportif à Domicile — Fécamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F7F1;
+    --ink:#132018;
+    --teal:#0F6656;
+    --teal-deep:#0A3F35;
+    --gold:#EAB13C;
+    --line:#DCE3D6;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Poppins', sans-serif; background:var(--bg); color:var(--ink); -webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Fraunces', serif; line-height:1.08; font-weight:600;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+  :focus-visible{outline:3px solid var(--teal); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important; transition:none !important;}}
+
+  header{padding:26px 0;}
+  nav{display:flex; justify-content:space-between; align-items:center; max-width:1080px; margin:0 auto; padding:0 28px;}
+  .logo{font-family:'Fraunces', serif; font-size:1.2rem; font-weight:600;}
+  .nav-cta{background:var(--teal); color:white; padding:11px 20px; border-radius:100px; font-size:0.85rem; font-weight:500;}
+
+  .hero{padding:40px 0 70px;}
+  .hero-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:50px; align-items:center;}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr;}}
+  .eyebrow{font-family:'JetBrains Mono', monospace; font-size:0.76rem; color:var(--teal); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:18px; display:flex; align-items:center; gap:8px;}
+  .eyebrow::before{content:''; width:20px; height:1px; background:var(--teal);}
+  .hero h1{font-size:clamp(2.2rem, 5vw, 3.4rem); letter-spacing:-0.01em;}
+  .hero-sub{margin-top:22px; font-size:1.08rem; color:#3E4B42; max-width:460px; line-height:1.6;}
+  .hero-cta{margin-top:32px; display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{background:var(--teal); color:white; padding:16px 26px; border-radius:100px; font-weight:500; font-size:0.95rem;}
+  .btn-ghost{padding:16px 22px; border-radius:100px; border:1px solid var(--line); font-weight:500; font-size:0.95rem;}
+
+  .visual{
+    aspect-ratio:3/4; border-radius:20px; overflow:hidden;
+    background:linear-gradient(160deg, var(--teal) 0%, var(--teal-deep) 100%);
+    position:relative; display:flex; align-items:flex-end; padding:26px;
+  }
+  .visual::before{content:''; position:absolute; top:-40px; right:-40px; width:180px; height:180px; background:var(--gold); opacity:0.35; border-radius:50%; filter:blur(50px);}
+  .visual .quote{color:white; font-family:'Fraunces', serif; font-size:1.3rem; line-height:1.3; position:relative;}
+  .visual .quote span{display:block; margin-top:10px; font-family:'JetBrains Mono', monospace; font-size:0.72rem; opacity:0.7;}
+
+  section{padding:70px 0;}
+  .section-head{max-width:520px; margin-bottom:44px;}
+  .section-head .eyebrow{margin-bottom:14px;}
+  .section-head h2{font-size:clamp(1.6rem,3.2vw,2.2rem);}
+  .section-head p{margin-top:14px; color:#3E4B42; font-size:1rem; line-height:1.6;}
+
+  /* TIMELINE - real sequence, milestones over weeks */
+  .timeline{position:relative; padding-left:36px; border-left:2px solid var(--line);}
+  .milestone{position:relative; padding-bottom:44px;}
+  .milestone:last-child{padding-bottom:0;}
+  .milestone::before{
+    content:''; position:absolute; left:-43px; top:2px;
+    width:14px; height:14px; border-radius:50%;
+    background:var(--teal); border:3px solid var(--bg);
+  }
+  .milestone .week{font-family:'JetBrains Mono', monospace; font-size:0.76rem; color:var(--teal); text-transform:uppercase; letter-spacing:0.06em;}
+  .milestone h3{font-size:1.2rem; margin-top:6px; font-weight:600;}
+  .milestone p{margin-top:8px; color:#3E4B42; font-size:0.94rem; max-width:480px; line-height:1.55;}
+
+  .formulas{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+  @media (max-width:860px){.formulas{grid-template-columns:1fr;}}
+  .formula{background:white; border:1px solid var(--line); border-radius:16px; padding:28px;}
+  .formula.featured{background:var(--teal-deep); color:white; border-color:var(--teal-deep);}
+  .formula .tag{font-family:'JetBrains Mono', monospace; font-size:0.72rem; text-transform:uppercase; opacity:0.7;}
+  .formula h3{font-size:1.3rem; margin-top:10px;}
+  .formula .price{font-family:'JetBrains Mono', monospace; font-size:1.6rem; margin-top:14px;}
+  .formula ul{margin-top:16px; padding-left:18px; font-size:0.9rem; line-height:1.8;}
+  .formula .cta-mini{display:inline-block; margin-top:20px; font-weight:600; font-size:0.9rem;}
+  .formula.featured .cta-mini{color:var(--gold);}
+  .formula:not(.featured) .cta-mini{color:var(--teal);}
+
+  .testimonials{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+  @media (max-width:760px){.testimonials{grid-template-columns:1fr;}}
+  .t-card{background:white; border-radius:16px; padding:26px; border:1px solid var(--line);}
+  .t-card p{font-size:1rem; line-height:1.55; font-family:'Fraunces', serif; font-weight:500;}
+  .t-card .who{margin-top:14px; font-family:'JetBrains Mono', monospace; font-size:0.78rem; color:var(--teal);}
+
+  .cta-final{background:var(--teal-deep); color:white; border-radius:24px; padding:64px 40px; text-align:center;}
+  .cta-final h2{font-size:clamp(1.8rem,4vw,2.4rem); max-width:560px; margin:0 auto;}
+  .cta-final p{margin-top:14px; opacity:0.8;}
+  .cta-final .btn-primary{background:var(--gold); color:var(--ink); margin-top:26px; display:inline-flex;}
+
+  footer{padding:36px 0; text-align:center; font-size:0.82rem; color:#5F6D63;}
+
+  /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
+  @media (max-width:600px){
+    .wrap{padding:0 20px;}
+    nav{padding:0 20px;}
+    .hero{padding:28px 0 50px;}
+    .visual{aspect-ratio:4/5; padding:20px;}
+    .visual .quote{font-size:1.1rem;}
+    .hero-cta{flex-direction:column; align-items:stretch;}
+    .hero-cta a{text-align:center;}
+    section{padding:50px 0;}
+    .timeline{padding-left:28px;}
+    .milestone::before{left:-35px;}
+    .formulas{gap:16px;}
+    .formula{padding:24px;}
+    .cta-final{padding:48px 24px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">Léa Coaching</div>
+    <a href="#offres" class="nav-cta">Réserver un bilan</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Coaching sportif à domicile — Fécamp</div>
+        <h1>Retrouvez votre énergie, chez vous, à votre rythme.</h1>
+        <p class="hero-sub">Un accompagnement sportif personnalisé, sans salle de sport ni horaires imposés. Je viens chez vous avec un programme construit pour votre corps, votre emploi du temps et vos objectifs réels.</p>
+        <div class="hero-cta">
+          <a href="#offres" class="btn-primary">Réserver mon bilan gratuit</a>
+          <a href="#parcours" class="btn-ghost">Voir le parcours type</a>
+        </div>
+      </div>
+      <div class="visual">
+        <div class="quote">"En 8 semaines, j'ai retrouvé une énergie que je pensais avoir perdue."
+          <span>— Sandrine, 47 ans, Fécamp</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="parcours">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Parcours type</div>
+        <h2>Ce qui se passe vraiment sur 8 semaines</h2>
+        <p>Pas de promesse magique : une progression construite étape par étape, ajustée selon vos retours à chaque séance.</p>
+      </div>
+      <div class="timeline">
+        <div class="milestone">
+          <div class="week">Semaine 1</div>
+          <h3>Bilan &amp; premiers repères</h3>
+          <p>Évaluation de votre condition physique, de vos douleurs éventuelles et de vos objectifs. Le programme est construit à partir de là.</p>
+        </div>
+        <div class="milestone">
+          <div class="week">Semaine 2 à 4</div>
+          <h3>Reprise progressive</h3>
+          <p>Renforcement doux, travail de mobilité, ajustement de l'intensité séance après séance selon votre ressenti.</p>
+        </div>
+        <div class="milestone">
+          <div class="week">Semaine 5 à 7</div>
+          <h3>Montée en charge</h3>
+          <p>Les séances gagnent en intensité, les premiers résultats deviennent visibles et mesurables.</p>
+        </div>
+        <div class="milestone">
+          <div class="week">Semaine 8</div>
+          <h3>Bilan &amp; suite</h3>
+          <p>Point complet sur les progrès réalisés et construction du programme des prochains mois.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="offres">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Formules</div>
+        <h2>Choisissez votre rythme</h2>
+      </div>
+      <div class="formulas">
+        <div class="formula">
+          <div class="tag">Découverte</div>
+          <h3>1 séance / semaine</h3>
+          <div class="price">65€<span style="font-size:0.9rem; opacity:0.6;"> /séance</span></div>
+          <ul><li>Séance de 1h à domicile</li><li>Programme personnalisé</li><li>Suivi par message</li></ul>
+          <a href="#" class="cta-mini">Réserver →</a>
+        </div>
+        <div class="formula featured">
+          <div class="tag">Le plus choisi</div>
+          <h3>2 séances / semaine</h3>
+          <div class="price">55€<span style="font-size:0.9rem; opacity:0.6;"> /séance</span></div>
+          <ul><li>2 séances de 1h à domicile</li><li>Programme évolutif sur 8 semaines</li><li>Bilan à mi-parcours</li></ul>
+          <a href="#" class="cta-mini">Réserver →</a>
+        </div>
+        <div class="formula">
+          <div class="tag">Intensif</div>
+          <h3>3 séances / semaine</h3>
+          <div class="price">48€<span style="font-size:0.9rem; opacity:0.6;"> /séance</span></div>
+          <ul><li>3 séances de 1h à domicile</li><li>Suivi nutrition léger</li><li>Bilan mensuel détaillé</li></ul>
+          <a href="#" class="cta-mini">Réserver →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Témoignages</div>
+        <h2>Ce qu'en disent les client·es de Fécamp</h2>
+      </div>
+      <div class="testimonials">
+        <div class="t-card">
+          <p>"Je n'avais jamais tenu plus de deux semaines dans une salle de sport. Chez moi, avec quelqu'un qui s'adapte à mon niveau, j'ai enfin tenu la distance."</p>
+          <div class="who">— Marc, 52 ans</div>
+        </div>
+        <div class="t-card">
+          <p>"Le bilan de départ a tout changé : le programme collait vraiment à mes douleurs de dos, pas un programme générique trouvé sur internet."</p>
+          <div class="who">— Sandrine, 47 ans</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta-final">
+        <h2>Un bilan gratuit pour savoir par où commencer</h2>
+        <p>30 minutes, à domicile, sans engagement.</p>
+        <a href="mailto:contact@leacoaching.fr" class="btn-primary">Réserver mon bilan →</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Léa Coaching — Fécamp · Exemple de landing page réalisée par Studio Convertible
+</footer>
+
+</body>
+</html>
