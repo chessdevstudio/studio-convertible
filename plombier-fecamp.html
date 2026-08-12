@@ -140,6 +140,22 @@
 
   footer{padding:30px 0; text-align:center; font-size:0.82rem; color:#8A6A5C;}
 
+  .contact-form{max-width:520px;}
+  .contact-form .cf-row{display:flex; gap:12px; margin-bottom:12px;}
+  @media (max-width:560px){.contact-form .cf-row{flex-direction:column;}}
+  .contact-form input, .contact-form textarea{
+    width:100%; padding:13px 16px; border-radius:8px; border:1px solid var(--line);
+    background:white; color:var(--ink); font-family:'Barlow', sans-serif; font-size:0.95rem;
+  }
+  .contact-form input:focus, .contact-form textarea:focus{outline:2px solid var(--red);}
+  .contact-form textarea{margin-bottom:16px; resize:vertical;}
+  .contact-form .hp-field{position:absolute; left:-9999px; opacity:0;}
+  .contact-form button{width:100%; border:none; cursor:pointer; font-family:inherit;}
+  .contact-form button:disabled{opacity:0.6; cursor:not-allowed;}
+  .cf-status{margin-top:12px; font-size:0.9rem; min-height:1.2em;}
+  .cf-status.ok{color:#1EA85C;}
+  .cf-status.err{color:var(--red-deep);}
+
   /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
   @media (max-width:600px){
     .wrap{padding:0 20px;}
@@ -226,6 +242,23 @@
         <div class="who">— Client à Fécamp, réparation fuite d'eau</div>
       </div>
     </div>
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Pas urgent ?</div>
+        <h2>Demandez un devis pour des travaux à venir</h2>
+      </div>
+      <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="cf-row">
+          <input type="text" name="name" placeholder="Votre nom" required>
+          <input type="tel" name="phone" placeholder="Votre téléphone" required>
+        </div>
+        <textarea name="message" placeholder="Décrivez rapidement les travaux à prévoir" rows="3" required></textarea>
+        <button type="submit" class="btn-call" style="justify-content:center;">Envoyer ma demande</button>
+        <p class="cf-status" id="cf-status" aria-live="polite"></p>
+      </form>
+    </div>
   </section>
 </main>
 
@@ -252,6 +285,35 @@
       document.getElementById('cookie-banner').style.display = 'none';
     });
   })();
+
+  const cf = document.getElementById('contact-form');
+  if(cf){
+    const status = document.getElementById('cf-status');
+    cf.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const btn = cf.querySelector('button[type="submit"]');
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours...';
+      status.textContent = ''; status.className = 'cf-status';
+      try{
+        const res = await fetch(cf.action, { method:'POST', body:new FormData(cf), headers:{'Accept':'application/json'} });
+        if(res.ok){
+          status.textContent = 'Demande envoyée — je vous recontacte rapidement.';
+          status.className = 'cf-status ok';
+          cf.reset();
+        } else {
+          status.textContent = "L'envoi a échoué, appelez-nous directement.";
+          status.className = 'cf-status err';
+        }
+      } catch(err){
+        status.textContent = "L'envoi a échoué, appelez-nous directement.";
+        status.className = 'cf-status err';
+      } finally {
+        btn.disabled = false; btn.textContent = originalLabel;
+      }
+    });
+  }
 </script>
 
 </body>

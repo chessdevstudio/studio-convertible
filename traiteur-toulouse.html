@@ -134,6 +134,23 @@
 
   footer{padding:36px 0; text-align:center; font-size:0.8rem; color:rgba(243,237,225,0.4); border-top:1px solid var(--line);}
 
+  .contact-form{margin-top:26px; text-align:left; max-width:460px; margin-left:auto; margin-right:auto;}
+  .contact-form .cf-row{display:flex; gap:12px; margin-bottom:12px;}
+  @media (max-width:560px){.contact-form .cf-row{flex-direction:column;}}
+  .contact-form input, .contact-form textarea{
+    width:100%; padding:13px 16px; border-radius:2px; border:1px solid var(--line);
+    background:rgba(243,237,225,0.06); color:var(--cream); font-family:'Manrope', sans-serif; font-size:0.9rem;
+  }
+  .contact-form input::placeholder, .contact-form textarea::placeholder{color:rgba(243,237,225,0.45);}
+  .contact-form input:focus, .contact-form textarea:focus{outline:1px solid var(--gold);}
+  .contact-form textarea{margin-bottom:16px; resize:vertical;}
+  .contact-form .hp-field{position:absolute; left:-9999px; opacity:0;}
+  .contact-form button{width:100%; border:none; cursor:pointer; font-family:inherit;}
+  .contact-form button:disabled{opacity:0.6; cursor:not-allowed;}
+  .cf-status{margin-top:12px; font-size:0.86rem; min-height:1.2em;}
+  .cf-status.ok{color:var(--gold);}
+  .cf-status.err{color:#E8A38F;}
+
   /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
   @media (max-width:600px){
     .wrap{padding:0 20px;}
@@ -268,7 +285,16 @@
       <div class="cta-final">
         <h2>Parlons de votre prochain événement</h2>
         <p>Réponse sous 24h ouvrées, devis détaillé sous 48h.</p>
-        <a href="mailto:contact@maisontraiteur.fr" class="btn-gold">Demander un devis →</a>
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="cf-row">
+            <input type="text" name="name" placeholder="Votre nom" required>
+            <input type="email" name="email" placeholder="Votre email professionnel" required>
+          </div>
+          <textarea name="message" placeholder="Type d'événement, date, nombre d'invités estimé..." rows="3" required></textarea>
+          <button type="submit" class="btn-gold">Demander un devis →</button>
+          <p class="cf-status" id="cf-status" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -321,6 +347,37 @@
     });
   });
   update();
+</script>
+
+<script>
+  const cf = document.getElementById('contact-form');
+  if(cf){
+    const status = document.getElementById('cf-status');
+    cf.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const btn = cf.querySelector('button[type="submit"]');
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours...';
+      status.textContent = ''; status.className = 'cf-status';
+      try{
+        const res = await fetch(cf.action, { method:'POST', body:new FormData(cf), headers:{'Accept':'application/json'} });
+        if(res.ok){
+          status.textContent = 'Demande envoyée — réponse sous 24h ouvrées.';
+          status.className = 'cf-status ok';
+          cf.reset();
+        } else {
+          status.textContent = "L'envoi a échoué, réessayez plus tard.";
+          status.className = 'cf-status err';
+        }
+      } catch(err){
+        status.textContent = "L'envoi a échoué, réessayez plus tard.";
+        status.className = 'cf-status err';
+      } finally {
+        btn.disabled = false; btn.textContent = originalLabel;
+      }
+    });
+  }
 </script>
 
 </body>

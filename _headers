@@ -1,0 +1,11 @@
+# Ce fichier n'est PAS lu par GitHub Pages — il ne sert que si le site est un jour
+# déployé sur Netlify ou Vercel, qui appliquent automatiquement ces règles.
+# Sur GitHub Pages, ces en-têtes de sécurité ne peuvent pas être définis
+# sans passer par un service tiers (ex: Cloudflare devant le domaine).
+
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formspree.io

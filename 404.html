@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page introuvable — Studio Convertible</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#FAFAF6; --ink:#14161A; --ink-soft:#5B5D57; --indigo:#3B2FC9; --lime:#C8F034; --line:#E4E1D4;}
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Inter', sans-serif; background:var(--bg); color:var(--ink);
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:40px 24px; text-align:center;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit;}
+  .code{
+    font-family:'JetBrains Mono', monospace; font-size:0.9rem; color:var(--indigo);
+    background:#EEEAFB; display:inline-block; padding:8px 16px; border-radius:100px; margin-bottom:24px;
+  }
+  h1{font-family:'Instrument Sans', sans-serif; font-size:clamp(2rem,5vw,3rem); letter-spacing:-0.02em; max-width:600px; margin:0 auto;}
+  p{margin-top:18px; color:var(--ink-soft); font-size:1.05rem; max-width:440px; margin-left:auto; margin-right:auto;}
+  .actions{margin-top:36px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
+  .btn-primary{background:var(--ink); color:var(--bg); padding:14px 26px; border-radius:100px; font-weight:600; font-size:0.92rem; text-decoration:none; transition:background .2s ease;}
+  .btn-primary:hover{background:var(--indigo);}
+  .btn-ghost{padding:14px 24px; border-radius:100px; border:1px solid var(--line); font-weight:600; font-size:0.92rem; text-decoration:none;}
+  .links{margin-top:44px; display:flex; gap:18px; justify-content:center; flex-wrap:wrap; font-size:0.85rem;}
+  .links a{color:var(--ink-soft); text-decoration:underline;}
+</style>
+</head>
+<body>
+  <div>
+    <div class="code">Erreur 404</div>
+    <h1>Cette page a disparu, contrairement à vos futurs visiteurs.</h1>
+    <p>La page que vous cherchez n'existe pas ou a été déplacée. Retournez à l'accueil pour continuer à explorer.</p>
+    <div class="actions">
+      <a href="index.html" class="btn-primary">Retour à l'accueil →</a>
+      <a href="index.html#portfolio" class="btn-ghost">Voir le portfolio</a>
+    </div>
+    <div class="links">
+      <a href="plombier-fecamp.html">Plombier Fécamp</a>
+      <a href="coach-sportif-fecamp.html">Coach sportif Fécamp</a>
+      <a href="traiteur-toulouse.html">Traiteur Toulouse</a>
+    </div>
+  </div>
+</body>
+</html>

@@ -327,6 +327,28 @@
     color:rgba(250,250,246,0.85);
   }
 
+  .stack-diagram{
+    margin-top:56px;
+    display:flex; align-items:stretch; gap:6px; flex-wrap:wrap;
+  }
+  .sd-node{
+    flex:1; min-width:130px;
+    background:rgba(250,250,246,0.06);
+    border:1px solid rgba(250,250,246,0.16);
+    border-radius:12px;
+    padding:20px 16px;
+    display:flex; flex-direction:column; align-items:flex-start; gap:6px;
+  }
+  .sd-node.featured{background:rgba(200,240,52,0.1); border-color:var(--lime);}
+  .sd-icon{font-size:1.3rem; color:var(--lime);}
+  .sd-node div, .sd-node{font-family:'Instrument Sans', sans-serif; font-weight:600; font-size:0.95rem;}
+  .sd-node small{font-family:'JetBrains Mono', monospace; font-weight:400; font-size:0.7rem; color:rgba(250,250,246,0.55); text-transform:uppercase; letter-spacing:0.04em;}
+  .sd-arrow{display:flex; align-items:center; color:var(--lime); font-size:1.2rem; padding:0 2px;}
+  @media (max-width:800px){
+    .stack-diagram{flex-direction:column;}
+    .sd-arrow{transform:rotate(90deg); align-self:center; padding:2px 0;}
+  }
+
   /* WHY */
   .why-grid{
     display:grid; grid-template-columns:repeat(3,1fr); gap:28px;
@@ -363,6 +385,23 @@
   .cta .btn-primary{background:white; color:var(--indigo); margin-top:30px;}
   .cta .btn-primary:hover{background:var(--lime); color:var(--ink);}
 
+  .contact-form{margin-top:34px; text-align:left; max-width:480px; margin-left:auto; margin-right:auto;}
+  .contact-form .cf-row{display:flex; gap:12px; margin-bottom:12px;}
+  @media (max-width:560px){.contact-form .cf-row{flex-direction:column;}}
+  .contact-form input, .contact-form textarea{
+    width:100%; padding:13px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.08); color:white; font-family:'Inter', sans-serif; font-size:0.92rem;
+  }
+  .contact-form input::placeholder, .contact-form textarea::placeholder{color:rgba(255,255,255,0.55);}
+  .contact-form input:focus, .contact-form textarea:focus{outline:2px solid var(--lime); background:rgba(255,255,255,0.14);}
+  .contact-form textarea{margin-bottom:16px; resize:vertical;}
+  .contact-form .hp-field{position:absolute; left:-9999px; opacity:0;}
+  .contact-form button{width:100%; border:none; cursor:pointer; font-family:inherit;}
+  .contact-form button:disabled{opacity:0.6; cursor:not-allowed;}
+  .cf-status{margin-top:12px; font-size:0.88rem; min-height:1.2em;}
+  .cf-status.ok{color:var(--lime);}
+  .cf-status.err{color:#FFB4A3;}
+
   footer{
     padding:40px 0 60px;
     display:flex; justify-content:space-between; align-items:center;
@@ -387,6 +426,7 @@
     .process-item{padding:24px 0;}
     .why-card, .p-body{padding:22px;}
     .cta{padding:48px 24px;}
+    .contact-form .cf-row{flex-direction:column;}
     footer{flex-direction:column; align-items:flex-start;}
   }
 </style>
@@ -537,6 +577,18 @@
         <span>Suivi analytics</span>
         <span>Maintenance</span>
       </div>
+
+      <div class="stack-diagram">
+        <div class="sd-node"><span class="sd-icon">✎</span>Design<small>Figma / tokens</small></div>
+        <div class="sd-arrow">→</div>
+        <div class="sd-node"><span class="sd-icon">⌨</span>Code<small>HTML · CSS · JS</small></div>
+        <div class="sd-arrow">→</div>
+        <div class="sd-node"><span class="sd-icon">⇪</span>Versionning<small>Git · GitHub</small></div>
+        <div class="sd-arrow">→</div>
+        <div class="sd-node"><span class="sd-icon">☁</span>Hébergement<small>DNS · SSL</small></div>
+        <div class="sd-arrow">→</div>
+        <div class="sd-node featured"><span class="sd-icon">✓</span>Votre PME<small>en ligne &amp; mesurée</small></div>
+      </div>
     </div>
   </section>
 
@@ -571,7 +623,17 @@
       <div class="cta">
         <h2>Prêt à transformer vos visiteurs en clients ?</h2>
         <p>Un audit gratuit de 20 minutes pour identifier ce qui freine la conversion sur votre présence actuelle.</p>
-        <a href="mailto:contact@studioconvertible.fr" class="btn-primary">Réserver mon audit gratuit →</a>
+
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="cf-row">
+            <input type="text" name="name" placeholder="Votre nom" required>
+            <input type="email" name="email" placeholder="Votre email" required>
+          </div>
+          <textarea name="message" placeholder="Parlez-moi rapidement de votre activité et de votre besoin" rows="3" required></textarea>
+          <button type="submit" class="btn-primary">Réserver mon audit gratuit →</button>
+          <p class="cf-status" id="cf-status" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -598,6 +660,42 @@
       document.getElementById('cookie-banner').style.display = 'none';
     });
   })();
+
+  // Formulaire de contact — envoi AJAX via Formspree
+  const cf = document.getElementById('contact-form');
+  if(cf){
+    const status = document.getElementById('cf-status');
+    cf.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const btn = cf.querySelector('button[type="submit"]');
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours...';
+      status.textContent = '';
+      status.className = 'cf-status';
+      try{
+        const res = await fetch(cf.action, {
+          method: 'POST',
+          body: new FormData(cf),
+          headers: { 'Accept': 'application/json' }
+        });
+        if(res.ok){
+          status.textContent = 'Message envoyé — je reviens vers vous rapidement.';
+          status.className = 'cf-status ok';
+          cf.reset();
+        } else {
+          status.textContent = "L'envoi a échoué, réessayez ou écrivez-moi directement par email.";
+          status.className = 'cf-status err';
+        }
+      } catch(err){
+        status.textContent = "L'envoi a échoué, réessayez ou écrivez-moi directement par email.";
+        status.className = 'cf-status err';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalLabel;
+      }
+    });
+  }
 </script>
 
 <script>

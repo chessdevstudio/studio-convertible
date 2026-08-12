@@ -124,6 +124,23 @@
 
   footer{padding:36px 0; text-align:center; font-size:0.82rem; color:#5F6D63;}
 
+  .contact-form{margin-top:26px; text-align:left; max-width:460px; margin-left:auto; margin-right:auto;}
+  .contact-form .cf-row{display:flex; gap:12px; margin-bottom:12px;}
+  @media (max-width:560px){.contact-form .cf-row{flex-direction:column;}}
+  .contact-form input, .contact-form textarea{
+    width:100%; padding:13px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.25);
+    background:rgba(255,255,255,0.1); color:white; font-family:'Poppins', sans-serif; font-size:0.92rem;
+  }
+  .contact-form input::placeholder, .contact-form textarea::placeholder{color:rgba(255,255,255,0.55);}
+  .contact-form input:focus, .contact-form textarea:focus{outline:2px solid var(--gold);}
+  .contact-form textarea{margin-bottom:16px; resize:vertical;}
+  .contact-form .hp-field{position:absolute; left:-9999px; opacity:0;}
+  .contact-form button{width:100%; border:none; cursor:pointer; font-family:inherit;}
+  .contact-form button:disabled{opacity:0.6; cursor:not-allowed;}
+  .cf-status{margin-top:12px; font-size:0.88rem; min-height:1.2em;}
+  .cf-status.ok{color:var(--gold);}
+  .cf-status.err{color:#FFB4A3;}
+
   /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
   @media (max-width:600px){
     .wrap{padding:0 20px;}
@@ -259,7 +276,16 @@
       <div class="cta-final">
         <h2>Un bilan gratuit pour savoir par où commencer</h2>
         <p>30 minutes, à domicile, sans engagement.</p>
-        <a href="mailto:contact@leacoaching.fr" class="btn-primary">Réserver mon bilan →</a>
+        <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="cf-row">
+            <input type="text" name="name" placeholder="Votre nom" required>
+            <input type="email" name="email" placeholder="Votre email" required>
+          </div>
+          <textarea name="message" placeholder="Vos objectifs, vos disponibilités..." rows="3" required></textarea>
+          <button type="submit" class="btn-primary">Réserver mon bilan →</button>
+          <p class="cf-status" id="cf-status" aria-live="polite"></p>
+        </form>
       </div>
     </div>
   </section>
@@ -283,6 +309,35 @@
       document.getElementById('cookie-banner').style.display = 'none';
     });
   })();
+
+  const cf = document.getElementById('contact-form');
+  if(cf){
+    const status = document.getElementById('cf-status');
+    cf.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const btn = cf.querySelector('button[type="submit"]');
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Envoi en cours...';
+      status.textContent = ''; status.className = 'cf-status';
+      try{
+        const res = await fetch(cf.action, { method:'POST', body:new FormData(cf), headers:{'Accept':'application/json'} });
+        if(res.ok){
+          status.textContent = 'Message envoyé — je reviens vers vous rapidement.';
+          status.className = 'cf-status ok';
+          cf.reset();
+        } else {
+          status.textContent = "L'envoi a échoué, réessayez plus tard.";
+          status.className = 'cf-status err';
+        }
+      } catch(err){
+        status.textContent = "L'envoi a échoué, réessayez plus tard.";
+        status.className = 'cf-status err';
+      } finally {
+        btn.disabled = false; btn.textContent = originalLabel;
+      }
+    });
+  }
 </script>
 
 </body>
