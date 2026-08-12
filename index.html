@@ -7,13 +7,19 @@
   (function(){
     try{
       var t = localStorage.getItem('theme');
-      if(t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)){
+      var isDark = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if(isDark){
         document.documentElement.setAttribute('data-theme','dark');
       }
+      document.addEventListener('DOMContentLoaded', function(){
+        var meta = document.getElementById('theme-color-meta');
+        if(meta) meta.setAttribute('content', isDark ? '#111319' : '#FAFAF6');
+      });
     }catch(e){}
   })();
 </script>
 <title>Studio Convertible — Landing pages qui convertissent pour les PME</title>
+<meta name="theme-color" id="theme-color-meta" content="#FAFAF6">
 <meta name="description" content="Studio Convertible conçoit, code et héberge des landing pages sur-mesure pour les PME, artisans et indépendants qui veulent transformer leurs visiteurs en clients.">
 <link rel="canonical" href="https://www.studioconvertible.fr/">
 <meta property="og:type" content="website">
@@ -339,16 +345,20 @@
     overflow:hidden;
     border:1px solid var(--line);
     background:var(--card-bg);
-    transition:transform .25s ease, box-shadow .25s ease;
+    cursor:pointer;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s cubic-bezier(.22,1,.36,1);
   }
   .p-card:hover{transform:translateY(-6px); box-shadow:0 24px 40px -24px rgba(20,22,26,0.2);}
+  .p-card:active{transform:translateY(-2px) scale(0.98); transition:transform .12s ease;}
   .p-thumb{
     aspect-ratio:4/3;
     display:flex; flex-direction:column; justify-content:space-between;
     padding:24px;
     position:relative;
     overflow:hidden;
+    transition:transform .35s cubic-bezier(.22,1,.36,1);
   }
+  .p-card:hover .p-thumb{transform:scale(1.035);}
   .p-thumb::after{
     content:''; position:absolute; inset:0;
     background:radial-gradient(circle at 80% 20%, rgba(255,255,255,0.18), transparent 60%);
@@ -819,6 +829,16 @@
     });
   })();
 
+  // Cartes portfolio cliquables (toute la carte mène vers la réalisation)
+  document.querySelectorAll('.p-card').forEach(card => {
+    const link = card.querySelector('.p-link');
+    if(!link) return;
+    card.addEventListener('click', function(e){
+      if(e.target.closest('a')) return; // laisse le lien natif gérer son propre clic
+      window.location.href = link.getAttribute('href');
+    });
+  });
+
   // Menu mobile
   (function(){
     const navToggle = document.getElementById('nav-toggle');
@@ -848,6 +868,8 @@
       toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
       toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
       toggle.setAttribute('aria-label', theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre');
+      const meta = document.getElementById('theme-color-meta');
+      if(meta) meta.setAttribute('content', theme === 'dark' ? '#111319' : '#FAFAF6');
     }
 
     toggle.addEventListener('click', function(){
