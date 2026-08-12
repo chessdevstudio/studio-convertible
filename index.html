@@ -3,6 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function(){
+    try{
+      var t = localStorage.getItem('theme');
+      if(t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)){
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    }catch(e){}
+  })();
+</script>
 <title>Studio Convertible — Landing pages qui convertissent pour les PME</title>
 <meta name="description" content="Studio Convertible conçoit, code et héberge des landing pages sur-mesure pour les PME, artisans et indépendants qui veulent transformer leurs visiteurs en clients.">
 <link rel="canonical" href="https://www.studioconvertible.fr/">
@@ -32,6 +42,39 @@
   "sameAs": []
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Combien coûte une landing page sur-mesure ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Le tarif dépend de la complexité (nombre de sections, fonctionnalités interactives, intégrations). Un audit gratuit permet d'estimer précisément le budget avant tout engagement." }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien de temps pour être en ligne ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Comptez en moyenne 1 à 3 semaines entre le premier échange et la mise en ligne, selon les allers-retours sur le contenu et le design." }
+    },
+    {
+      "@type": "Question",
+      "name": "Et après la mise en ligne, qui s'occupe de l'hébergement ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "L'hébergement, le nom de domaine et le certificat de sécurité sont gérés de bout en bout. Un contrat de maintenance optionnel couvre les mises à jour après le lancement." }
+    },
+    {
+      "@type": "Question",
+      "name": "Puis-je modifier moi-même les textes ensuite ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Oui, une courte prise en main est proposée à la livraison pour les modifications simples de texte." }
+    },
+    {
+      "@type": "Question",
+      "name": "Le site sera-t-il bien référencé sur Google ?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Chaque landing page est construite avec les bonnes pratiques SEO local dès le départ (structure, vitesse, balisage)." }
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -47,7 +90,22 @@
     --coral:#FF6B49;
     --line:#E4E1D4;
     --radius:14px;
+    --ink-fixed:#14161A;
+    --bg-fixed:#FAFAF6;
   }
+  html[data-theme="dark"]{
+    --bg:#111319;
+    --bg-alt:#191C24;
+    --ink:#F3F3EF;
+    --ink-soft:#A7AAB0;
+    --indigo:#9A8CFF;
+    --indigo-deep:#6459E8;
+    --lime:#C8F034;
+    --coral:#FF8567;
+    --line:#2B2E37;
+  }
+  html{transition:none;}
+  body{transition:background .25s ease, color .25s ease;}
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
   body{
@@ -56,6 +114,7 @@
     font-family:'Inter', sans-serif;
     -webkit-font-smoothing:antialiased;
     overflow-x:hidden;
+    transition:background .25s ease, color .25s ease;
   }
   h1,h2,h3, .display{
     font-family:'Instrument Sans', sans-serif;
@@ -85,8 +144,10 @@
   header{
     position:sticky; top:0; z-index:50;
     background:rgba(250,250,246,0.86);
+    -webkit-backdrop-filter:blur(10px);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
+    transition:background .25s ease, border-color .25s ease;
   }
   nav{
     display:flex; align-items:center; justify-content:space-between;
@@ -107,7 +168,34 @@
     padding:10px 20px; border-radius:100px;
     font-size:0.88rem; font-weight:600;
   }
+  .nav-actions{display:flex; align-items:center; gap:14px;}
+  .theme-toggle{
+    width:38px; height:38px; border-radius:50%;
+    border:1px solid var(--line); background:var(--bg-alt);
+    font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:transform .2s ease;
+  }
+  .theme-toggle:hover{transform:scale(1.06);}
   @media (max-width:760px){ .nav-links{display:none;} }
+
+  .nav-toggle{
+    display:none; width:38px; height:38px; border-radius:8px;
+    border:1px solid var(--line); background:var(--bg-alt);
+    cursor:pointer; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+  }
+  .nav-toggle span{width:16px; height:2px; background:var(--ink); border-radius:2px; transition:transform .2s ease, opacity .2s ease;}
+  .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+  .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
+  .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+  .mobile-menu{
+    display:none; flex-direction:column; gap:4px;
+    padding:12px 32px 20px; border-bottom:1px solid var(--line);
+    background:var(--bg);
+  }
+  .mobile-menu.open{display:flex;}
+  .mobile-menu a{padding:12px 4px; font-size:0.98rem; font-weight:500; border-bottom:1px solid var(--line);}
+  .mobile-menu a:last-child{border-bottom:none;}
+  @media (max-width:760px){ .nav-toggle{display:flex;} }
 
   /* HERO */
   .hero{
@@ -192,6 +280,7 @@
   .pane-after{
     background:linear-gradient(135deg, var(--indigo) 0%, var(--indigo-deep) 100%);
     color:white;
+    -webkit-clip-path:inset(0 50% 0 0);
     clip-path:inset(0 50% 0 0);
   }
   .pane-after .tag{color:var(--lime);}
@@ -291,7 +380,7 @@
   }
 
   /* PROCESS */
-  .process-bg{background:var(--ink); color:var(--bg);}
+  .process-bg{background:var(--ink-fixed); color:var(--bg-fixed);}
   .process-bg .eyebrow{color:var(--lime);}
   .process-bg .section-head p{color:rgba(250,250,246,0.65);}
   .process-list{display:flex; flex-direction:column;}
@@ -365,6 +454,23 @@
   .why-card h3{font-size:1.15rem; font-weight:600; margin-bottom:10px;}
   .why-card p{color:var(--ink-soft); font-size:0.92rem; line-height:1.55;}
 
+  .faq-list{max-width:720px; display:flex; flex-direction:column; gap:12px;}
+  .faq-item{
+    background:white; border:1px solid var(--line); border-radius:12px;
+    padding:6px 22px;
+  }
+  .faq-item summary{
+    padding:16px 0; cursor:pointer; font-weight:600; font-size:1rem;
+    list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{
+    content:'+'; font-size:1.3rem; color:var(--indigo); flex-shrink:0;
+    transition:transform .2s ease;
+  }
+  .faq-item[open] summary::after{transform:rotate(45deg);}
+  .faq-item p{padding-bottom:18px; color:var(--ink-soft); font-size:0.94rem; line-height:1.6;}
+
   /* CTA */
   .cta{
     background:linear-gradient(135deg, var(--indigo) 0%, var(--indigo-deep) 100%);
@@ -413,7 +519,9 @@
   /* MOBILE REFINEMENTS — même design, ajusté pour petits écrans */
   @media (max-width:600px){
     .wrap{padding:0 20px;}
-    nav{padding:16px 20px;}
+    nav{padding:16px 20px; flex-wrap:wrap; row-gap:10px;}
+    .nav-cta{padding:9px 14px; font-size:0.8rem;}
+    .theme-toggle{width:34px; height:34px; font-size:0.9rem;}
     .hero{padding:44px 0 36px;}
     .hero-actions{flex-direction:column; align-items:stretch;}
     .hero-actions a{text-align:center;}
@@ -440,9 +548,23 @@
       <a href="#portfolio">Portfolio</a>
       <a href="#process">Méthode</a>
       <a href="#why">Pourquoi</a>
+      <a href="#faq">FAQ</a>
     </div>
-    <a href="#cta" class="nav-cta">Discutons de votre projet</a>
+    <div class="nav-actions">
+      <a href="#cta" class="nav-cta">Discutons de votre projet</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Activer le mode sombre" aria-pressed="false">🌙</button>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
+  <div id="mobile-menu" class="mobile-menu">
+    <a href="#portfolio">Portfolio</a>
+    <a href="#process">Méthode</a>
+    <a href="#why">Pourquoi</a>
+    <a href="#faq">FAQ</a>
+    <a href="#cta" class="nav-cta" style="margin-top:8px; text-align:center;">Discutons de votre projet</a>
+  </div>
 </header>
 
 <main>
@@ -618,6 +740,37 @@
     </div>
   </section>
 
+  <section id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Questions fréquentes</div>
+        <h2>Ce que les PME me demandent le plus souvent</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Combien coûte une landing page sur-mesure ?</summary>
+          <p>Le tarif dépend de la complexité (nombre de sections, fonctionnalités interactives, intégrations). Un audit gratuit permet d'estimer précisément le budget avant tout engagement.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Combien de temps pour être en ligne ?</summary>
+          <p>Comptez en moyenne 1 à 3 semaines entre le premier échange et la mise en ligne, selon les allers-retours sur le contenu et le design.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Et après la mise en ligne, qui s'occupe de l'hébergement ?</summary>
+          <p>L'hébergement, le nom de domaine et le certificat de sécurité sont gérés de bout en bout. Un contrat de maintenance optionnel couvre les mises à jour de contenu après le lancement.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Puis-je modifier moi-même les textes ensuite ?</summary>
+          <p>Oui, une courte prise en main est proposée à la livraison pour les modifications simples de texte. Pour des changements plus structurels, je reste disponible.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Le site sera-t-il bien référencé sur Google ?</summary>
+          <p>Chaque landing page est construite avec les bonnes pratiques SEO local dès le départ (structure, vitesse, balisage). Le référencement naturel prend ensuite quelques semaines à quelques mois pour monter en puissance.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <section id="cta">
     <div class="wrap">
       <div class="cta">
@@ -626,6 +779,7 @@
 
         <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
           <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="_next" value="merci.html">
           <div class="cf-row">
             <input type="text" name="name" placeholder="Votre nom" required>
             <input type="email" name="email" placeholder="Votre email" required>
@@ -642,7 +796,7 @@
 <footer>
   <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:12px;">
     <span>Studio Convertible — Landing pages pour PME</span>
-    <span>Fécamp · Toulouse · à distance partout en France · <a href="legal.html" style="color:inherit;">Mentions légales</a></span>
+    <span>Fécamp · Toulouse · à distance partout en France · <a href="faq.html" style="color:inherit;">FAQ</a> · <a href="legal.html" style="color:inherit;">Mentions légales</a></span>
   </div>
 </footer>
 
@@ -658,6 +812,45 @@
     document.getElementById('cookie-ok').addEventListener('click', function(){
       localStorage.setItem('cookieNoticeSeen', '1');
       document.getElementById('cookie-banner').style.display = 'none';
+    });
+  })();
+
+  // Menu mobile
+  (function(){
+    const navToggle = document.getElementById('nav-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    navToggle.addEventListener('click', function(){
+      const open = mobileMenu.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navToggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', function(){
+      mobileMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    }));
+  })();
+
+  // Dark mode — préférence système par défaut, override manuel persisté
+  (function(){
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initial = stored || (prefersDark ? 'dark' : 'light');
+    applyTheme(initial);
+
+    function applyTheme(theme){
+      root.setAttribute('data-theme', theme);
+      toggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+      toggle.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+      toggle.setAttribute('aria-label', theme === 'dark' ? 'Activer le mode clair' : 'Activer le mode sombre');
+    }
+
+    toggle.addEventListener('click', function(){
+      const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
     });
   })();
 
@@ -680,9 +873,11 @@
           headers: { 'Accept': 'application/json' }
         });
         if(res.ok){
-          status.textContent = 'Message envoyé — je reviens vers vous rapidement.';
+          status.textContent = 'Message envoyé — redirection...';
           status.className = 'cf-status ok';
           cf.reset();
+          window.location.href = 'merci.html';
+          return;
         } else {
           status.textContent = "L'envoi a échoué, réessayez ou écrivez-moi directement par email.";
           status.className = 'cf-status err';
@@ -704,11 +899,17 @@
   const handle = document.getElementById('handle');
   let dragging = false;
 
+  function setClip(pct){
+    const value = `inset(0 ${100-pct}% 0 0)`;
+    afterPane.style.webkitClipPath = value;
+    afterPane.style.clipPath = value;
+  }
+
   function setPosition(clientX){
     const rect = compare.getBoundingClientRect();
     let pct = ((clientX - rect.left) / rect.width) * 100;
     pct = Math.max(4, Math.min(96, pct));
-    afterPane.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+    setClip(pct);
     handle.style.left = pct + '%';
     handle.setAttribute('aria-valuenow', Math.round(pct));
   }
@@ -720,7 +921,7 @@
     else if(e.key === 'ArrowRight'){ current = Math.min(96, current + 5); }
     else { return; }
     e.preventDefault();
-    afterPane.style.clipPath = `inset(0 ${100-current}% 0 0)`;
+    setClip(current);
     handle.style.left = current + '%';
     handle.setAttribute('aria-valuenow', Math.round(current));
   });
@@ -739,9 +940,9 @@
     const hint = setInterval(() => {
       t += 1;
       const pct = 50 + Math.sin(t/3) * 8;
-      afterPane.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
+      setClip(pct);
       handle.style.left = pct + '%';
-      if(t > 18){ clearInterval(hint); setPosition(window.innerWidth/2 + compare.getBoundingClientRect().left - compare.getBoundingClientRect().left); afterPane.style.clipPath = 'inset(0 50% 0 0)'; handle.style.left='50%';}
+      if(t > 18){ clearInterval(hint); setPosition(window.innerWidth/2 + compare.getBoundingClientRect().left - compare.getBoundingClientRect().left); setClip(50); handle.style.left='50%';}
     }, 90);
   });
 </script>

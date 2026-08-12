@@ -36,6 +36,17 @@
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Studio Convertible", "item": "https://www.studioconvertible.fr/" },
+    { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://www.studioconvertible.fr/#portfolio" },
+    { "@type": "ListItem", "position": 3, "name": "Fécamp Plomberie", "item": "https://www.studioconvertible.fr/plombier-fecamp.html" }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -250,6 +261,7 @@
       </div>
       <form id="contact-form" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
         <input type="text" name="_gotcha" class="hp-field" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="_next" value="merci.html">
         <div class="cf-row">
           <input type="text" name="name" placeholder="Votre nom" required>
           <input type="tel" name="phone" placeholder="Votre téléphone" required>
@@ -299,9 +311,11 @@
       try{
         const res = await fetch(cf.action, { method:'POST', body:new FormData(cf), headers:{'Accept':'application/json'} });
         if(res.ok){
-          status.textContent = 'Demande envoyée — je vous recontacte rapidement.';
+          status.textContent = 'Demande envoyée — redirection...';
           status.className = 'cf-status ok';
           cf.reset();
+          window.location.href = 'merci.html';
+          return;
         } else {
           status.textContent = "L'envoi a échoué, appelez-nous directement.";
           status.className = 'cf-status err';
