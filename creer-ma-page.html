@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Créez un brouillon de votre page — Studio Convertible</title>
+<meta name="description" content="Essayez gratuitement notre éditeur en ligne : construisez un premier brouillon de votre page web, puis envoyez-le à Studio Convertible pour une finalisation professionnelle.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --indigo:#3B2FC9; --indigo-deep:#2A2196; --lime:#C8F034;
+    --bg:#F4F3EF; --panel:#FFFFFF; --line:#E1DFD6;
+    --ink:#14161A; --ink-soft:#6B6D68;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Inter', sans-serif; background:var(--bg); color:var(--ink);
+    height:100vh; display:flex; flex-direction:column; overflow:hidden;
+  }
+  /* ===== TOPBAR ===== */
+  #topbar{
+    display:flex; align-items:center; gap:8px; padding:8px 14px;
+    background:var(--panel); border-bottom:1px solid var(--line); flex-wrap:wrap; z-index:20;
+  }
+  #topbar .brand{font-family:'Instrument Sans',sans-serif; font-weight:700; font-size:0.95rem; margin-right:10px; white-space:nowrap;}
+  #topbar .brand span{color:var(--indigo);}
+  .tb-sep{width:1px; height:22px; background:var(--line); margin:0 4px;}
+  .tb-btn{
+    border:1px solid var(--line); background:var(--panel); border-radius:6px; height:32px; min-width:32px;
+    padding:0 8px; cursor:pointer; font-size:0.82rem; color:var(--ink); display:flex; align-items:center; gap:4px;
+    transition:background .15s ease;
+  }
+  .tb-btn:hover{background:var(--bg);}
+  .tb-btn.active{background:var(--indigo); color:white; border-color:var(--indigo);}
+  .tb-btn.primary{background:var(--indigo); color:white; border-color:var(--indigo); font-weight:600;}
+  .tb-btn.primary:hover{background:var(--indigo-deep);}
+  select.tb-select, input.tb-color{
+    border:1px solid var(--line); border-radius:6px; height:32px; font-size:0.8rem; background:var(--panel); color:var(--ink); padding:0 6px;
+  }
+  input.tb-color{width:32px; padding:2px; cursor:pointer;}
+  #topbar-right{margin-left:auto; display:flex; gap:8px; align-items:center;}
+
+  /* ===== LAYOUT ===== */
+  #main{flex:1; display:flex; overflow:hidden;}
+  #sidebar-left{
+    width:210px; background:var(--panel); border-right:1px solid var(--line);
+    overflow-y:auto; padding:14px 12px; flex-shrink:0;
+  }
+  #sidebar-left h4{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin:16px 0 8px;}
+  #sidebar-left h4:first-child{margin-top:0;}
+  .block-btn{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:left;
+    padding:9px 10px; border:1px solid var(--line); background:var(--panel); border-radius:8px;
+    cursor:pointer; font-size:0.82rem; margin-bottom:6px; color:var(--ink);
+  }
+  .block-btn:hover{background:var(--bg); border-color:var(--indigo);}
+  .block-btn .ic{font-size:1rem;}
+
+  #canvas-wrap{
+    flex:1; overflow-y:auto; background:#DEDCD2; padding:30px 20px; display:flex; justify-content:center;
+  }
+  #canvas{
+    background:white; min-height:600px; width:100%; max-width:900px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.12); transition:max-width .2s ease;
+  }
+  #canvas.tablet{max-width:600px;}
+  #canvas.mobile{max-width:380px;}
+  #canvas-inner{min-height:600px;}
+
+  #sidebar-right{
+    width:260px; background:var(--panel); border-left:1px solid var(--line);
+    overflow-y:auto; padding:14px 14px; flex-shrink:0;
+  }
+  #sidebar-right h4{font-size:0.72rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin:18px 0 8px;}
+  #sidebar-right h4:first-child{margin-top:0;}
+  .field{margin-bottom:10px;}
+  .field label{display:block; font-size:0.76rem; color:var(--ink-soft); margin-bottom:4px;}
+  .field input[type=text], .field input[type=url], .field input[type=number], .field select, .field textarea{
+    width:100%; border:1px solid var(--line); border-radius:6px; padding:6px 8px; font-size:0.82rem; font-family:inherit;
+  }
+  .field input[type=range]{width:100%;}
+  .field input[type=color]{width:100%; height:32px; border:1px solid var(--line); border-radius:6px; padding:2px;}
+  .field-row{display:flex; gap:8px;}
+  .field-row .field{flex:1;}
+  .btn-group{display:flex; gap:4px;}
+  .btn-group .tb-btn{flex:1;}
+  .empty-hint{color:var(--ink-soft); font-size:0.82rem; padding:20px 4px; text-align:center; line-height:1.5;}
+
+  /* ===== BLOCKS ON CANVAS ===== */
+  .eblock{
+    position:relative; outline:2px dashed transparent; outline-offset:-2px;
+  }
+  .eblock:hover{outline-color:rgba(59,47,201,0.35);}
+  .eblock.selected{outline:2px solid var(--indigo);}
+  .eblock-toolbar{
+    position:absolute; top:-13px; right:6px; display:none; gap:2px; z-index:10;
+  }
+  .eblock:hover .eblock-toolbar, .eblock.selected .eblock-toolbar{display:flex;}
+  .eblock-toolbar button{
+    width:26px; height:26px; border-radius:5px; border:1px solid var(--line); background:white; cursor:pointer; font-size:0.75rem;
+  }
+  .eblock-toolbar button:hover{background:var(--bg);}
+  .eblock [contenteditable]{outline:none;}
+  .col-wrap{display:grid; gap:16px;}
+  .col-wrap.c2{grid-template-columns:1fr 1fr;}
+  .col-wrap.c3{grid-template-columns:1fr 1fr 1fr;}
+  .col-wrap [contenteditable]{min-height:40px; outline:1px dashed transparent;}
+  .col-wrap [contenteditable]:focus{outline:1px dashed var(--indigo);}
+
+  /* ===== MODAL ===== */
+  #modal-overlay{
+    position:fixed; inset:0; background:rgba(20,22,26,0.55); display:none;
+    align-items:center; justify-content:center; z-index:100; padding:24px;
+  }
+  #modal-overlay.open{display:flex;}
+  #modal{
+    background:white; border-radius:12px; max-width:760px; width:100%; max-height:82vh;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  #modal-head{padding:16px 20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;}
+  #modal-head h3{margin:0; font-size:1rem; font-family:'Instrument Sans',sans-serif;}
+  #modal-head button{border:none; background:none; font-size:1.2rem; cursor:pointer; color:var(--ink-soft);}
+  #modal-body{padding:16px 20px; overflow-y:auto; flex:1;}
+  #modal-body textarea{
+    width:100%; height:340px; font-family:'JetBrains Mono', monospace; font-size:0.78rem;
+    border:1px solid var(--line); border-radius:8px; padding:12px; resize:vertical;
+  }
+  #modal-foot{padding:14px 20px; border-top:1px solid var(--line); display:flex; gap:8px; justify-content:flex-end;}
+
+  ::selection{background:rgba(200,240,52,0.5);}
+
+  #promo-banner{
+    background:#3B2FC9; color:white; padding:12px 20px;
+    display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+  }
+  #promo-logo{
+    font-family:'Instrument Sans', sans-serif; font-weight:700; font-size:0.95rem;
+    color:white; text-decoration:none; white-space:nowrap;
+  }
+  #promo-logo span{color:#C8F034;}
+  #promo-banner p{margin:0; font-size:0.85rem; color:rgba(255,255,255,0.9); flex:1; min-width:200px;}
+
+  #send-overlay{
+    position:fixed; inset:0; background:rgba(20,22,26,0.55); display:none;
+    align-items:center; justify-content:center; z-index:100; padding:24px;
+  }
+  #send-overlay.open{display:flex;}
+  #send-modal{
+    background:white; border-radius:12px; max-width:440px; width:100%;
+    display:flex; flex-direction:column; overflow:hidden;
+  }
+  #send-form button{margin-top:6px; border:none; cursor:pointer;}
+  #send-status.ok{color:#2E7D32;}
+  #send-status.err{color:#C62828;}
+</style>
+</head>
+<body>
+
+<div id="promo-banner">
+  <a href="index.html" id="promo-logo">studio<span>convertible</span></a>
+  <p>Construisez un premier brouillon de votre page, gratuitement — envoyez-le-nous ensuite, on s'occupe de le transformer en site professionnel.</p>
+</div>
+
+<div id="topbar">
+  <div class="brand">édit<span>eur</span></div>
+
+  <select id="fmt-block" class="tb-select" title="Style du texte">
+    <option value="p">Paragraphe</option>
+    <option value="h1">Titre 1</option>
+    <option value="h2">Titre 2</option>
+    <option value="h3">Titre 3</option>
+    <option value="h4">Titre 4</option>
+    <option value="blockquote">Citation</option>
+  </select>
+  <select id="fmt-font" class="tb-select" title="Police">
+    <option value="Inter, sans-serif">Inter</option>
+    <option value="'Instrument Sans', sans-serif">Instrument Sans</option>
+    <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+    <option value="Georgia, serif">Georgia</option>
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="'Courier New', monospace">Courier New</option>
+  </select>
+  <select id="fmt-size" class="tb-select" title="Taille du texte">
+    <option value="1">Très petit</option>
+    <option value="2">Petit</option>
+    <option value="3" selected>Normal</option>
+    <option value="4">Moyen</option>
+    <option value="5">Grand</option>
+    <option value="6">Très grand</option>
+    <option value="7">Énorme</option>
+  </select>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" data-cmd="bold" title="Gras"><b>G</b></button>
+  <button class="tb-btn" data-cmd="italic" title="Italique"><i>I</i></button>
+  <button class="tb-btn" data-cmd="underline" title="Souligné"><u>S</u></button>
+  <button class="tb-btn" data-cmd="strikeThrough" title="Barré"><s>B</s></button>
+  <button class="tb-btn" data-cmd="superscript" title="Exposant">x²</button>
+  <button class="tb-btn" data-cmd="subscript" title="Indice">x₂</button>
+  <div class="tb-sep"></div>
+  <input type="color" class="tb-color" id="fmt-color" title="Couleur du texte" value="#14161A">
+  <input type="color" class="tb-color" id="fmt-bgcolor" title="Surligner" value="#C8F034">
+  <div class="tb-sep"></div>
+  <button class="tb-btn" data-cmd="justifyLeft" title="Aligner à gauche">⟸</button>
+  <button class="tb-btn" data-cmd="justifyCenter" title="Centrer">⟺</button>
+  <button class="tb-btn" data-cmd="justifyRight" title="Aligner à droite">⟹</button>
+  <button class="tb-btn" data-cmd="justifyFull" title="Justifier">☰</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" data-cmd="insertUnorderedList" title="Liste à puces">•—</button>
+  <button class="tb-btn" data-cmd="insertOrderedList" title="Liste numérotée">1.—</button>
+  <button class="tb-btn" data-cmd="outdent" title="Diminuer le retrait">⇤</button>
+  <button class="tb-btn" data-cmd="indent" title="Augmenter le retrait">⇥</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-link" title="Insérer un lien">🔗</button>
+  <button class="tb-btn" data-cmd="unlink" title="Retirer le lien">🔗✕</button>
+  <button class="tb-btn" data-cmd="insertHorizontalRule" title="Ligne de séparation">―</button>
+  <button class="tb-btn" data-cmd="removeFormat" title="Effacer la mise en forme">⌫</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btn-undo" title="Annuler (Ctrl+Z)">↺</button>
+  <button class="tb-btn" id="btn-redo" title="Rétablir (Ctrl+Y)">↻</button>
+
+  <div id="topbar-right">
+    <button class="tb-btn" id="view-desktop" title="Aperçu ordinateur">🖥️</button>
+    <button class="tb-btn" id="view-tablet" title="Aperçu tablette">📋</button>
+    <button class="tb-btn" id="view-mobile" title="Aperçu mobile">📱</button>
+    <div class="tb-sep"></div>
+    <button class="tb-btn" id="btn-export-json" title="Sauvegarder pour continuer plus tard sur cet ordinateur">💾 Sauvegarder mon brouillon</button>
+    <button class="tb-btn" id="btn-import-json" title="Reprendre un brouillon sauvegardé">📂 Reprendre</button>
+    <input type="file" id="file-import" accept=".json" style="display:none;">
+    <button class="tb-btn" id="btn-export-code">Voir le code</button>
+    <button class="tb-btn primary" id="btn-send-draft">📩 Envoyer mon brouillon</button>
+  </div>
+</div>
+
+<div id="main">
+
+  <div id="sidebar-left">
+    <h4>Ajouter un bloc</h4>
+    <button class="block-btn" data-add="heading"><span class="ic">🔠</span> Titre</button>
+    <button class="block-btn" data-add="paragraph"><span class="ic">¶</span> Paragraphe</button>
+    <button class="block-btn" data-add="image"><span class="ic">🖼️</span> Image</button>
+    <button class="block-btn" data-add="button"><span class="ic">🔘</span> Bouton</button>
+    <button class="block-btn" data-add="quote"><span class="ic">❝</span> Citation</button>
+    <button class="block-btn" data-add="list"><span class="ic">☰</span> Liste</button>
+    <button class="block-btn" data-add="divider"><span class="ic">―</span> Séparateur</button>
+    <button class="block-btn" data-add="spacer"><span class="ic">↕️</span> Espacement</button>
+    <button class="block-btn" data-add="columns2"><span class="ic">▥</span> 2 colonnes</button>
+    <button class="block-btn" data-add="columns3"><span class="ic">▦</span> 3 colonnes</button>
+
+    <h4>Page</h4>
+    <div class="field">
+      <label>Couleur de fond de la page</label>
+      <input type="color" id="page-bg" value="#FFFFFF">
+    </div>
+    <div class="field">
+      <label>Largeur maximale (px)</label>
+      <input type="number" id="page-maxwidth" value="900" min="320" max="1400" step="10">
+    </div>
+  </div>
+
+  <div id="canvas-wrap">
+    <div id="canvas">
+      <div id="canvas-inner"></div>
+    </div>
+  </div>
+
+  <div id="sidebar-right">
+    <div id="inspector">
+      <div class="empty-hint">Sélectionnez un bloc sur la page pour modifier son style ici (couleurs, marges, bordures...).</div>
+    </div>
+  </div>
+
+</div>
+
+<div id="modal-overlay">
+  <div id="modal">
+    <div id="modal-head">
+      <h3>Code HTML généré</h3>
+      <button id="modal-close">✕</button>
+    </div>
+    <div id="modal-body">
+      <textarea id="code-output" readonly></textarea>
+    </div>
+    <div id="modal-foot">
+      <button class="tb-btn" id="btn-copy-code">📋 Copier le code</button>
+      <button class="tb-btn primary" id="btn-download-code">⬇️ Télécharger le fichier .html</button>
+    </div>
+  </div>
+</div>
+
+<div id="send-overlay">
+  <div id="send-modal">
+    <div id="modal-head">
+      <h3>Envoyer mon brouillon</h3>
+      <button id="send-close">✕</button>
+    </div>
+    <div id="modal-body">
+      <p style="font-size:0.85rem; color:var(--ink-soft); margin-top:0;">Votre brouillon est joint automatiquement. Laissez vos coordonnées pour qu'on puisse vous recontacter et finaliser votre page.</p>
+      <form id="send-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <input type="hidden" name="_next" value="merci.html">
+        <input type="hidden" name="_subject" value="Nouveau brouillon reçu depuis l'éditeur en ligne">
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="field"><label>Votre nom</label><input type="text" name="name" required></div>
+        <div class="field"><label>Votre email</label><input type="email" name="email" required></div>
+        <div class="field"><label>Un mot sur votre projet (optionnel)</label><textarea name="message" rows="3"></textarea></div>
+        <textarea name="brouillon_html" id="draft-html-field" style="display:none;"></textarea>
+        <button type="submit" class="tb-btn primary" style="width:100%; justify-content:center; height:40px;">Envoyer mon brouillon à Studio Convertible →</button>
+        <p id="send-status" style="font-size:0.8rem; margin-top:8px;"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  let blocks = [];
+  let idCounter = 1;
+  let selectedId = null;
+  let lastEditable = null;
+  let history = [];
+  let historyIndex = -1;
+  let suppressHistory = false;
+
+  const canvasInner = document.getElementById('canvas-inner');
+  const inspector = document.getElementById('inspector');
+
+  function uid(){ return 'b' + (idCounter++); }
+
+  function defaultStyles(type){
+    const base = { padding:'16px', margin:'0', bg:'transparent', color:'#14161A', align:'left', radius:'0', borderWidth:'0', borderColor:'#E1DFD6', maxWidth:'100%', lineHeight:'1.6', letterSpacing:'0' };
+    if(type==='button'){ base.bg = '#3B2FC9'; base.color = '#FFFFFF'; base.radius = '100px'; base.padding='14px 28px'; }
+    if(type==='divider'){ base.borderColor = '#E1DFD6'; }
+    return base;
+  }
+
+  function newBlock(type){
+    const id = uid();
+    const b = { id, type, styles: defaultStyles(type) };
+    if(type==='heading'){ b.level='h2'; b.content='Votre titre ici'; }
+    if(type==='paragraph'){ b.content='Votre texte ici. Cliquez pour modifier ce paragraphe.'; }
+    if(type==='quote'){ b.content='« Une citation percutante peut renforcer la confiance du visiteur. »'; }
+    if(type==='list'){ b.content='<ul><li>Premier élément</li><li>Deuxième élément</li><li>Troisième élément</li></ul>'; }
+    if(type==='image'){ b.src=''; b.alt="Description de l'image"; b.width='100'; }
+    if(type==='button'){ b.label='Cliquez ici'; b.href='#'; }
+    if(type==='divider'){ b.thickness='1'; }
+    if(type==='spacer'){ b.height='40'; }
+    if(type==='columns2'){ b.col1='Colonne 1'; b.col2='Colonne 2'; }
+    if(type==='columns3'){ b.col1='Colonne 1'; b.col2='Colonne 2'; b.col3='Colonne 3'; }
+    return b;
+  }
+
+  function pushHistory(){
+    if(suppressHistory) return;
+    history = history.slice(0, historyIndex+1);
+    history.push(JSON.stringify(blocks));
+    historyIndex = history.length - 1;
+    if(history.length > 60){ history.shift(); historyIndex--; }
+  }
+
+  function undo(){
+    if(historyIndex <= 0) return;
+    historyIndex--;
+    suppressHistory = true;
+    blocks = JSON.parse(history[historyIndex]);
+    render();
+    suppressHistory = false;
+  }
+  function redo(){
+    if(historyIndex >= history.length-1) return;
+    historyIndex++;
+    suppressHistory = true;
+    blocks = JSON.parse(history[historyIndex]);
+    render();
+    suppressHistory = false;
+  }
+
+  function styleString(s){
+    let str = `padding:${s.padding}; margin:${s.margin}; background:${s.bg}; color:${s.color}; text-align:${s.align}; border-radius:${s.radius}; border:${s.borderWidth}px solid ${s.borderColor}; max-width:${s.maxWidth}; line-height:${s.lineHeight}; letter-spacing:${s.letterSpacing}px;`;
+    return str;
+  }
+
+  function renderBlockHTML(b){
+    const s = styleString(b.styles);
+    if(b.type==='heading') return `<${b.level} contenteditable="true" data-field="content" style="${s} font-family:'Instrument Sans',sans-serif; margin-top:0; margin-bottom:0;">${b.content}</${b.level}>`;
+    if(b.type==='paragraph') return `<p contenteditable="true" data-field="content" style="${s} margin:0;">${b.content}</p>`;
+    if(b.type==='quote') return `<blockquote contenteditable="true" data-field="content" style="${s} margin:0; border-left:4px solid #3B2FC9; font-style:italic;">${b.content}</blockquote>`;
+    if(b.type==='list') return `<div contenteditable="true" data-field="content" style="${s}">${b.content}</div>`;
+    if(b.type==='image') return `<div style="${s} text-align:${b.styles.align};">${b.src ? `<img src="${b.src}" alt="${b.alt}" style="width:${b.width}%; max-width:100%; border-radius:${b.styles.radius};">` : `<div style="background:#EEEDE6; border:2px dashed #CFCDC1; border-radius:8px; padding:40px; color:#8A8C82; font-size:0.85rem;">Aucune image — cliquez sur ce bloc puis ajoutez une URL dans le panneau de droite</div>`}</div>`;
+    if(b.type==='button') return `<div style="${styleString({...b.styles, padding:'0', bg:'transparent', border:'none'})} text-align:${b.styles.align};"><a href="${b.href}" style="display:inline-block; padding:${b.styles.padding}; background:${b.styles.bg}; color:${b.styles.color}; border-radius:${b.styles.radius}; text-decoration:none; font-weight:600; font-family:Inter,sans-serif;">${b.label}</a></div>`;
+    if(b.type==='divider') return `<div style="${s}"><hr style="border:none; border-top:${b.thickness}px solid ${b.styles.borderColor}; margin:0;"></div>`;
+    if(b.type==='spacer') return `<div style="height:${b.height}px;"></div>`;
+    if(b.type==='columns2') return `<div style="${s}"><div class="col-wrap c2"><div contenteditable="true" data-field="col1">${b.col1}</div><div contenteditable="true" data-field="col2">${b.col2}</div></div></div>`;
+    if(b.type==='columns3') return `<div style="${s}"><div class="col-wrap c3"><div contenteditable="true" data-field="col1">${b.col1}</div><div contenteditable="true" data-field="col2">${b.col2}</div><div contenteditable="true" data-field="col3">${b.col3}</div></div></div>`;
+    return '';
+  }
+
+  function render(){
+    canvasInner.innerHTML = '';
+    const pageBg = document.getElementById('page-bg').value;
+    const pageMaxWidth = document.getElementById('page-maxwidth').value;
+    canvasInner.style.background = pageBg;
+    canvasInner.style.maxWidth = pageMaxWidth + 'px';
+    canvasInner.style.margin = '0 auto';
+
+    blocks.forEach((b, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'eblock' + (b.id === selectedId ? ' selected' : '');
+      wrap.dataset.id = b.id;
+      wrap.draggable = true;
+      wrap.innerHTML = `
+        <div class="eblock-toolbar">
+          <button data-act="up" title="Monter">↑</button>
+          <button data-act="down" title="Descendre">↓</button>
+          <button data-act="dup" title="Dupliquer">⧉</button>
+          <button data-act="del" title="Supprimer">🗑️</button>
+        </div>
+        ${renderBlockHTML(b)}
+      `;
+      canvasInner.appendChild(wrap);
+    });
+
+    if(blocks.length === 0){
+      canvasInner.innerHTML = '<div style="padding:60px 30px; text-align:center; color:#8A8C82; font-size:0.9rem;">Votre page est vide.<br>Ajoutez un bloc depuis le panneau de gauche pour commencer.</div>';
+    }
+
+    renderInspector();
+  }
+
+  function renderInspector(){
+    const b = blocks.find(x => x.id === selectedId);
+    if(!b){
+      inspector.innerHTML = '<div class="empty-hint">Sélectionnez un bloc sur la page pour modifier son style ici (couleurs, marges, bordures...).</div>';
+      return;
+    }
+    let extra = '';
+    if(b.type==='image'){
+      extra += `
+        <h4>Contenu</h4>
+        <div class="field"><label>URL de l'image</label><input type="url" id="insp-src" value="${b.src}" placeholder="https://..."></div>
+        <div class="field"><label>Texte alternatif (alt)</label><input type="text" id="insp-alt" value="${b.alt}"></div>
+        <div class="field"><label>Largeur (%)</label><input type="range" id="insp-width" min="10" max="100" value="${b.width}"></div>
+      `;
+    }
+    if(b.type==='button'){
+      extra += `
+        <h4>Contenu</h4>
+        <div class="field"><label>Texte du bouton</label><input type="text" id="insp-label" value="${b.label}"></div>
+        <div class="field"><label>Lien (URL ou #ancre)</label><input type="text" id="insp-href" value="${b.href}"></div>
+      `;
+    }
+    if(b.type==='divider'){
+      extra += `<h4>Contenu</h4><div class="field"><label>Épaisseur (px)</label><input type="range" id="insp-thickness" min="1" max="10" value="${b.thickness}"></div>`;
+    }
+    if(b.type==='spacer'){
+      extra += `<h4>Contenu</h4><div class="field"><label>Hauteur (px)</label><input type="range" id="insp-height" min="0" max="200" value="${b.height}"></div>`;
+    }
+    if(b.type==='heading'){
+      extra += `<h4>Niveau</h4><div class="btn-group">
+        ${['h1','h2','h3','h4'].map(l => `<button class="tb-btn${b.level===l?' active':''}" data-heading-level="${l}">${l.toUpperCase()}</button>`).join('')}
+      </div>`;
+    }
+
+    inspector.innerHTML = `
+      ${extra}
+      <h4>Style</h4>
+      <div class="field"><label>Couleur de fond</label><input type="color" id="insp-bg" value="${toHex(b.styles.bg)}"></div>
+      <div class="field"><label>Couleur du texte</label><input type="color" id="insp-color" value="${toHex(b.styles.color)}"></div>
+      <div class="field"><label>Alignement</label>
+        <div class="btn-group">
+          <button class="tb-btn${b.styles.align==='left'?' active':''}" data-align="left">⟸</button>
+          <button class="tb-btn${b.styles.align==='center'?' active':''}" data-align="center">⟺</button>
+          <button class="tb-btn${b.styles.align==='right'?' active':''}" data-align="right">⟹</button>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Marge intérieure</label><input type="text" id="insp-padding" value="${b.styles.padding}"></div>
+        <div class="field"><label>Marge extérieure</label><input type="text" id="insp-margin" value="${b.styles.margin}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Arrondi des coins (px)</label><input type="number" id="insp-radius" value="${parseInt(b.styles.radius)||0}"></div>
+        <div class="field"><label>Largeur max</label><input type="text" id="insp-maxwidth" value="${b.styles.maxWidth}"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Bordure (px)</label><input type="number" id="insp-borderwidth" value="${b.styles.borderWidth}"></div>
+        <div class="field"><label>Couleur bordure</label><input type="color" id="insp-bordercolor" value="${toHex(b.styles.borderColor)}"></div>
+      </div>
+      <h4>Typographie avancée</h4>
+      <div class="field-row">
+        <div class="field"><label>Interligne</label><input type="range" id="insp-lineheight" min="1" max="2.5" step="0.1" value="${b.styles.lineHeight}"></div>
+        <div class="field"><label>Espacement lettres (px)</label><input type="range" id="insp-letterspacing" min="-1" max="5" step="0.5" value="${b.styles.letterSpacing}"></div>
+      </div>
+    `;
+    bindInspectorEvents(b);
+  }
+
+  function toHex(c){
+    if(!c || c==='transparent') return '#ffffff';
+    if(c.startsWith('#')) return c;
+    return '#ffffff';
+  }
+
+  function bindInspectorEvents(b){
+    const set = (field, val) => { b.styles[field] = val; render(); pushHistory(); };
+    const q = id => document.getElementById(id);
+    if(q('insp-src')) q('insp-src').addEventListener('change', e => { b.src = e.target.value; render(); pushHistory(); });
+    if(q('insp-alt')) q('insp-alt').addEventListener('change', e => { b.alt = e.target.value; render(); pushHistory(); });
+    if(q('insp-width')) q('insp-width').addEventListener('input', e => { b.width = e.target.value; render(); });
+    if(q('insp-label')) q('insp-label').addEventListener('change', e => { b.label = e.target.value; render(); pushHistory(); });
+    if(q('insp-href')) q('insp-href').addEventListener('change', e => { b.href = e.target.value; render(); pushHistory(); });
+    if(q('insp-thickness')) q('insp-thickness').addEventListener('input', e => { b.thickness = e.target.value; render(); });
+    if(q('insp-height')) q('insp-height').addEventListener('input', e => { b.height = e.target.value; render(); });
+    document.querySelectorAll('[data-heading-level]').forEach(btn => btn.addEventListener('click', () => { b.level = btn.dataset.headingLevel; render(); pushHistory(); }));
+    if(q('insp-bg')) q('insp-bg').addEventListener('input', e => set('bg', e.target.value));
+    if(q('insp-color')) q('insp-color').addEventListener('input', e => set('color', e.target.value));
+    document.querySelectorAll('[data-align]').forEach(btn => btn.addEventListener('click', () => set('align', btn.dataset.align)));
+    if(q('insp-padding')) q('insp-padding').addEventListener('change', e => set('padding', e.target.value));
+    if(q('insp-margin')) q('insp-margin').addEventListener('change', e => set('margin', e.target.value));
+    if(q('insp-radius')) q('insp-radius').addEventListener('change', e => set('radius', e.target.value + 'px'));
+    if(q('insp-maxwidth')) q('insp-maxwidth').addEventListener('change', e => set('maxWidth', e.target.value));
+    if(q('insp-borderwidth')) q('insp-borderwidth').addEventListener('change', e => set('borderWidth', e.target.value));
+    if(q('insp-bordercolor')) q('insp-bordercolor').addEventListener('input', e => set('borderColor', e.target.value));
+    if(q('insp-lineheight')) q('insp-lineheight').addEventListener('input', e => set('lineHeight', e.target.value));
+    if(q('insp-letterspacing')) q('insp-letterspacing').addEventListener('input', e => set('letterSpacing', e.target.value));
+  }
+
+  // ===== Canvas interactions =====
+  canvasInner.addEventListener('click', e => {
+    const wrap = e.target.closest('.eblock');
+    if(!wrap) return;
+    const act = e.target.dataset.act;
+    const id = wrap.dataset.id;
+    if(act){
+      const idx = blocks.findIndex(x => x.id === id);
+      if(act==='up' && idx>0){ [blocks[idx-1], blocks[idx]] = [blocks[idx], blocks[idx-1]]; }
+      if(act==='down' && idx<blocks.length-1){ [blocks[idx+1], blocks[idx]] = [blocks[idx], blocks[idx+1]]; }
+      if(act==='dup'){ const copy = JSON.parse(JSON.stringify(blocks[idx])); copy.id = uid(); blocks.splice(idx+1,0,copy); }
+      if(act==='del'){ blocks.splice(idx,1); selectedId = null; }
+      render(); pushHistory();
+      return;
+    }
+    selectedId = id;
+    render();
+  });
+
+  canvasInner.addEventListener('focusin', e => {
+    if(e.target.hasAttribute('contenteditable')) lastEditable = e.target;
+  });
+
+  canvasInner.addEventListener('input', e => {
+    const wrap = e.target.closest('.eblock');
+    if(!wrap) return;
+    const b = blocks.find(x => x.id === wrap.dataset.id);
+    if(!b) return;
+    const field = e.target.dataset.field;
+    if(field) b[field] = e.target.innerHTML;
+  });
+
+  canvasInner.addEventListener('blur', e => { if(e.target.hasAttribute('contenteditable')) pushHistory(); }, true);
+
+  // Drag reorder
+  let dragSrc = null;
+  canvasInner.addEventListener('dragstart', e => {
+    const wrap = e.target.closest('.eblock');
+    if(!wrap) return;
+    dragSrc = wrap.dataset.id;
+  });
+  canvasInner.addEventListener('dragover', e => e.preventDefault());
+  canvasInner.addEventListener('drop', e => {
+    e.preventDefault();
+    const wrap = e.target.closest('.eblock');
+    if(!wrap || !dragSrc || wrap.dataset.id === dragSrc) return;
+    const from = blocks.findIndex(x => x.id === dragSrc);
+    const to = blocks.findIndex(x => x.id === wrap.dataset.id);
+    const [moved] = blocks.splice(from,1);
+    blocks.splice(to,0,moved);
+    dragSrc = null;
+    render(); pushHistory();
+  });
+
+  // ===== Left sidebar: add blocks =====
+  document.querySelectorAll('[data-add]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const b = newBlock(btn.dataset.add);
+      blocks.push(b);
+      selectedId = b.id;
+      render(); pushHistory();
+    });
+  });
+
+  document.getElementById('page-bg').addEventListener('input', render);
+  document.getElementById('page-maxwidth').addEventListener('change', render);
+
+  // ===== Top toolbar: rich text formatting =====
+  document.querySelectorAll('[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(lastEditable) lastEditable.focus();
+      document.execCommand(btn.dataset.cmd, false, null);
+      if(lastEditable){
+        const wrap = lastEditable.closest('.eblock');
+        if(wrap){
+          const b = blocks.find(x => x.id === wrap.dataset.id);
+          const field = lastEditable.dataset.field;
+          if(b && field) b[field] = lastEditable.innerHTML;
+        }
+      }
+      pushHistory();
+    });
+  });
+
+  document.getElementById('fmt-block').addEventListener('change', e => {
+    if(lastEditable) lastEditable.focus();
+    document.execCommand('formatBlock', false, e.target.value);
+    pushHistory();
+  });
+  document.getElementById('fmt-font').addEventListener('change', e => {
+    if(lastEditable) lastEditable.focus();
+    document.execCommand('fontName', false, e.target.value);
+    pushHistory();
+  });
+  document.getElementById('fmt-size').addEventListener('change', e => {
+    if(lastEditable) lastEditable.focus();
+    document.execCommand('fontSize', false, e.target.value);
+    pushHistory();
+  });
+  document.getElementById('fmt-color').addEventListener('input', e => {
+    if(lastEditable) lastEditable.focus();
+    document.execCommand('foreColor', false, e.target.value);
+  });
+  document.getElementById('fmt-bgcolor').addEventListener('input', e => {
+    if(lastEditable) lastEditable.focus();
+    document.execCommand('hiliteColor', false, e.target.value);
+  });
+  document.getElementById('btn-link').addEventListener('click', () => {
+    const url = prompt('Adresse du lien (https://...) :', 'https://');
+    if(url){
+      if(lastEditable) lastEditable.focus();
+      document.execCommand('createLink', false, url);
+      pushHistory();
+    }
+  });
+  document.getElementById('btn-undo').addEventListener('click', undo);
+  document.getElementById('btn-redo').addEventListener('click', redo);
+  document.addEventListener('keydown', e => {
+    if((e.ctrlKey || e.metaKey) && e.key==='z' && !e.shiftKey){ e.preventDefault(); undo(); }
+    if((e.ctrlKey || e.metaKey) && (e.key==='y' || (e.key==='z' && e.shiftKey))){ e.preventDefault(); redo(); }
+  });
+
+  // ===== Viewport preview =====
+  const canvasEl = document.getElementById('canvas');
+  function setView(mode){
+    canvasEl.classList.remove('tablet','mobile');
+    if(mode!=='desktop') canvasEl.classList.add(mode);
+    document.querySelectorAll('#view-desktop,#view-tablet,#view-mobile').forEach(b=>b.classList.remove('active'));
+    document.getElementById('view-'+mode).classList.add('active');
+  }
+  document.getElementById('view-desktop').addEventListener('click', () => setView('desktop'));
+  document.getElementById('view-tablet').addEventListener('click', () => setView('tablet'));
+  document.getElementById('view-mobile').addEventListener('click', () => setView('mobile'));
+  setView('desktop');
+
+  // ===== Export / Import JSON (sauvegarde du projet) =====
+  document.getElementById('btn-export-json').addEventListener('click', () => {
+    const data = { blocks, pageBg: document.getElementById('page-bg').value, pageMaxWidth: document.getElementById('page-maxwidth').value };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'projet-editeur.json';
+    a.click();
+  });
+  document.getElementById('btn-import-json').addEventListener('click', () => document.getElementById('file-import').click());
+  document.getElementById('file-import').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try{
+        const data = JSON.parse(evt.target.result);
+        blocks = data.blocks || [];
+        document.getElementById('page-bg').value = data.pageBg || '#FFFFFF';
+        document.getElementById('page-maxwidth').value = data.pageMaxWidth || 900;
+        idCounter = 1000;
+        selectedId = null;
+        render(); pushHistory();
+      }catch(err){ alert('Fichier de projet invalide.'); }
+    };
+    reader.readAsText(file);
+  });
+
+  // ===== Export code =====
+  function generateFullHTML(){
+    const pageBg = document.getElementById('page-bg').value;
+    const pageMaxWidth = document.getElementById('page-maxwidth').value;
+    const body = blocks.map(renderBlockHTML).join('\n');
+    return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ma page</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Sans:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0; font-family:'Inter', sans-serif; background:${pageBg};}
+  .page-container{max-width:${pageMaxWidth}px; margin:0 auto;}
+  .col-wrap{display:grid; gap:16px;}
+  .col-wrap.c2{grid-template-columns:1fr 1fr;}
+  .col-wrap.c3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:700px){ .col-wrap.c2, .col-wrap.c3{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="page-container">
+${body}
+</div>
+</body>
+</html>`;
+  }
+
+  document.getElementById('btn-export-code').addEventListener('click', () => {
+    document.getElementById('code-output').value = generateFullHTML();
+    document.getElementById('modal-overlay').classList.add('open');
+  });
+  document.getElementById('modal-close').addEventListener('click', () => document.getElementById('modal-overlay').classList.remove('open'));
+  document.getElementById('modal-overlay').addEventListener('click', e => { if(e.target.id==='modal-overlay') e.target.classList.remove('open'); });
+  document.getElementById('btn-copy-code').addEventListener('click', () => {
+    const ta = document.getElementById('code-output');
+    ta.select();
+    document.execCommand('copy');
+    const btn = document.getElementById('btn-copy-code');
+    const old = btn.textContent;
+    btn.textContent = '✓ Copié !';
+    setTimeout(() => btn.textContent = old, 1500);
+  });
+  document.getElementById('btn-download-code').addEventListener('click', () => {
+    const blob = new Blob([generateFullHTML()], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ma-page.html';
+    a.click();
+  });
+
+  // ===== Envoi du brouillon à Studio Convertible =====
+  document.getElementById('btn-send-draft').addEventListener('click', () => {
+    document.getElementById('draft-html-field').value = generateFullHTML();
+    document.getElementById('send-overlay').classList.add('open');
+  });
+  document.getElementById('send-close').addEventListener('click', () => document.getElementById('send-overlay').classList.remove('open'));
+  document.getElementById('send-overlay').addEventListener('click', e => { if(e.target.id==='send-overlay') e.target.classList.remove('open'); });
+
+  document.getElementById('send-form').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const form = e.target;
+    const status = document.getElementById('send-status');
+    const btn = form.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours...';
+    status.textContent = '';
+    status.className = '';
+    try{
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if(res.ok){
+        window.location.href = 'merci.html';
+        return;
+      } else {
+        status.textContent = "L'envoi a échoué, réessayez ou écrivez-nous directement par email.";
+        status.className = 'err';
+      }
+    } catch(err){
+      status.textContent = "L'envoi a échoué, réessayez ou écrivez-nous directement par email.";
+      status.className = 'err';
+    }
+    btn.disabled = false;
+    btn.textContent = 'Envoyer mon brouillon à Studio Convertible →';
+  });
+
+  // Init with a starter block so the canvas isn't empty
+  blocks.push(Object.assign(newBlock('heading'), {content:'Bienvenue sur votre page'}));
+  blocks.push(newBlock('paragraph'));
+  render();
+  pushHistory();
+})();
+</script>
+</body>
+</html>
