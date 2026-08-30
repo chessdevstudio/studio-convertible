@@ -819,21 +819,7 @@
   </div>
 </footer>
 
-<div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#14161A; color:#FAFAF6; padding:18px 24px; z-index:100; font-size:0.88rem; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;">
-  <span>Ce site n'utilise aucun cookie de suivi pour le moment. Ce bandeau s'activera automatiquement si un outil de mesure d'audience est ajouté. <a href="legal.html" style="color:#C8F034;">En savoir plus</a></span>
-  <button id="cookie-ok" style="background:#C8F034; color:#14161A; border:none; padding:9px 18px; border-radius:100px; font-weight:600; cursor:pointer; font-size:0.85rem;">Compris</button>
-</div>
 <script>
-  (function(){
-    if(!localStorage.getItem('cookieNoticeSeen')){
-      document.getElementById('cookie-banner').style.display = 'flex';
-    }
-    document.getElementById('cookie-ok').addEventListener('click', function(){
-      localStorage.setItem('cookieNoticeSeen', '1');
-      document.getElementById('cookie-banner').style.display = 'none';
-    });
-  })();
-
   // Cartes portfolio cliquables (toute la carte mène vers la réalisation)
   document.querySelectorAll('.p-card').forEach(card => {
     const link = card.querySelector('.p-link');
