@@ -201,8 +201,8 @@
     .cta-final{padding:48px 24px;}
   }
 </style>
-<script src="https://cdn.monpetitcookie.fr/widget.js"
-        data-api-key="mpc_c9071cfa582e752893db74890f1f5c5ccfa124403d45bf24"></script>
+<!-- Mon Petit Cookie retiré temporairement : nécessite un nom de domaine.
+     <script src="https://cdn.monpetitcookie.fr/widget.js" data-api-key="mpc_c9071cfa582e752893db74890f1f5c5ccfa124403d45bf24"></script> -->
 </head>
 <body>
 
@@ -346,6 +346,22 @@
 <footer>
   Maison Traiteur — Toulouse · Exemple de landing page réalisée par Studio Convertible · <a href="legal.html" style="color:inherit;">Mentions légales</a>
 </footer>
+
+<div id="cookie-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#0C1512; color:#F3EDE1; padding:16px 24px; z-index:60; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-top:1px solid rgba(243,237,225,0.14);">
+  <span>Aucun cookie de suivi n'est utilisé pour le moment. <a href="legal.html" style="color:#C9A227;">En savoir plus</a></span>
+  <button id="cookie-ok" style="background:#C9A227; color:#101B17; border:none; padding:8px 16px; border-radius:2px; font-weight:600; cursor:pointer; font-size:0.82rem;">Compris</button>
+</div>
+<script>
+  (function(){
+    if(!localStorage.getItem('cookieNoticeSeen')){
+      document.getElementById('cookie-banner').style.display = 'flex';
+    }
+    document.getElementById('cookie-ok').addEventListener('click', function(){
+      localStorage.setItem('cookieNoticeSeen', '1');
+      document.getElementById('cookie-banner').style.display = 'none';
+    });
+  })();
+</script>
 
 <script>
   (function(){

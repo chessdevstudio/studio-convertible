@@ -185,8 +185,8 @@
     body{padding-bottom:96px;}
   }
 </style>
-<script src="https://cdn.monpetitcookie.fr/widget.js"
-        data-api-key="mpc_c9071cfa582e752893db74890f1f5c5ccfa124403d45bf24"></script>
+<!-- Mon Petit Cookie retiré temporairement : nécessite un nom de domaine.
+     <script src="https://cdn.monpetitcookie.fr/widget.js" data-api-key="mpc_c9071cfa582e752893db74890f1f5c5ccfa124403d45bf24"></script> -->
 </head>
 <body>
 
@@ -285,7 +285,21 @@
   Fécamp Plomberie — SIRET fictif à titre de démonstration · Exemple de landing page réalisée par Studio Convertible · <a href="legal.html" style="color:inherit;">Mentions légales</a>
 </footer>
 
+<div id="cookie-banner" style="display:none; position:fixed; bottom:60px; left:0; right:0; background:#1C0F0B; color:#FFF7F2; padding:16px 20px; z-index:60; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap;">
+  <span>Aucun cookie de suivi n'est utilisé pour le moment. <a href="legal.html" style="color:#FFB238;">En savoir plus</a></span>
+  <button id="cookie-ok" style="background:#E63B22; color:white; border:none; padding:8px 16px; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.82rem;">Compris</button>
+</div>
 <script>
+  (function(){
+    if(!localStorage.getItem('cookieNoticeSeen')){
+      document.getElementById('cookie-banner').style.display = 'flex';
+    }
+    document.getElementById('cookie-ok').addEventListener('click', function(){
+      localStorage.setItem('cookieNoticeSeen', '1');
+      document.getElementById('cookie-banner').style.display = 'none';
+    });
+  })();
+
   const cf = document.getElementById('contact-form');
   if(cf){
     const status = document.getElementById('cf-status');
