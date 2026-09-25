@@ -104,6 +104,8 @@
     --bg-fixed:#FAFAF6;
     --card-bg:#FFFFFF;
     --header-bg:rgba(250,250,246,0.86);
+    --ease-out:cubic-bezier(0.22,1,0.36,1);
+    --ease-in-out:cubic-bezier(0.77,0,0.175,1);
   }
   html[data-theme="dark"]{
     --bg:#111319;
@@ -187,9 +189,12 @@
     width:38px; height:38px; border-radius:50%;
     border:1px solid var(--line); background:var(--bg-alt);
     font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center;
-    transition:transform .2s ease;
+    transition:transform .2s var(--ease-out);
   }
-  .theme-toggle:hover{transform:scale(1.06);}
+  @media (hover:hover) and (pointer:fine){
+    .theme-toggle:hover{transform:scale(1.06);}
+  }
+  .theme-toggle:active{transform:scale(0.92); transition:transform .1s var(--ease-out);}
   @media (max-width:760px){ .nav-links{display:none;} }
 
   .nav-toggle{
@@ -197,16 +202,18 @@
     border:1px solid var(--line); background:var(--bg-alt);
     cursor:pointer; flex-direction:column; align-items:center; justify-content:center; gap:4px;
   }
-  .nav-toggle span{width:16px; height:2px; background:var(--ink); border-radius:2px; transition:transform .2s ease, opacity .2s ease;}
+  .nav-toggle span{width:16px; height:2px; background:var(--ink); border-radius:2px; transition:transform .2s var(--ease-in-out), opacity .2s ease;}
   .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg);}
   .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;}
   .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
   .mobile-menu{
-    display:none; flex-direction:column; gap:4px;
-    padding:12px 32px 20px; border-bottom:1px solid var(--line);
+    display:flex; flex-direction:column; gap:4px;
+    padding:0 32px; border-bottom:1px solid transparent;
     background:var(--bg);
+    max-height:0; overflow:hidden; opacity:0;
+    transition:max-height .3s var(--ease-in-out), opacity .2s ease, padding .3s var(--ease-in-out), border-color .2s ease;
   }
-  .mobile-menu.open{display:flex;}
+  .mobile-menu.open{max-height:400px; opacity:1; padding:12px 32px 20px; border-color:var(--line);}
   .mobile-menu a{padding:12px 4px; font-size:0.98rem; font-weight:500; border-bottom:1px solid var(--line);}
   .mobile-menu a:last-child{border-bottom:none;}
   @media (max-width:760px){ .nav-toggle{display:flex;} }
@@ -256,16 +263,22 @@
     padding:15px 28px; border-radius:100px;
     font-weight:600; font-size:0.95rem;
     display:inline-flex; align-items:center; gap:8px;
-    transition:transform .2s ease, background .2s ease;
+    transition:transform .2s var(--ease-out), background .2s ease;
   }
-  .btn-primary:hover{background:var(--indigo); transform:translateY(-2px);}
+  @media (hover:hover) and (pointer:fine){
+    .btn-primary:hover{background:var(--indigo); transform:translateY(-2px);}
+  }
+  .btn-primary:active{transform:translateY(0) scale(0.97); transition:transform .1s var(--ease-out);}
   .btn-ghost{
     padding:15px 24px; border-radius:100px;
     border:1px solid var(--line);
     font-weight:600; font-size:0.95rem;
-    transition:border-color .2s ease;
+    transition:border-color .2s ease, transform .2s var(--ease-out);
   }
-  .btn-ghost:hover{border-color:var(--ink);}
+  @media (hover:hover) and (pointer:fine){
+    .btn-ghost:hover{border-color:var(--ink);}
+  }
+  .btn-ghost:active{transform:scale(0.97); transition:transform .1s var(--ease-out);}
 
   /* SIGNATURE: SLIDER */
   .compare{
@@ -350,19 +363,21 @@
     border:1px solid var(--line);
     background:var(--card-bg);
     cursor:pointer;
-    transition:transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s cubic-bezier(.22,1,.36,1);
+    transition:transform .3s var(--ease-out), box-shadow .3s var(--ease-out);
   }
-  .p-card:hover{transform:translateY(-6px); box-shadow:0 24px 40px -24px rgba(20,22,26,0.2);}
-  .p-card:active{transform:translateY(-2px) scale(0.98); transition:transform .12s ease;}
+  @media (hover:hover) and (pointer:fine){
+    .p-card:hover{transform:translateY(-6px); box-shadow:0 24px 40px -24px rgba(20,22,26,0.2);}
+    .p-card:hover .p-thumb{transform:scale(1.035);}
+  }
+  .p-card:active{transform:translateY(-2px) scale(0.98); transition:transform .12s var(--ease-out);}
   .p-thumb{
     aspect-ratio:4/3;
     display:flex; flex-direction:column; justify-content:space-between;
     padding:24px;
     position:relative;
     overflow:hidden;
-    transition:transform .35s cubic-bezier(.22,1,.36,1);
+    transition:transform .25s var(--ease-out);
   }
-  .p-card:hover .p-thumb{transform:scale(1.035);}
   .p-thumb::after{
     content:''; position:absolute; inset:0;
     background:radial-gradient(circle at 80% 20%, rgba(255,255,255,0.18), transparent 60%);
@@ -476,7 +491,9 @@
   .faq-item{
     background:var(--card-bg); border:1px solid var(--line); border-radius:12px;
     padding:6px 22px;
+    transition:border-color .2s ease;
   }
+  .faq-item[open]{border-color:var(--indigo);}
   .faq-item summary{
     padding:16px 0; cursor:pointer; font-weight:600; font-size:1rem;
     list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;
@@ -484,7 +501,7 @@
   .faq-item summary::-webkit-details-marker{display:none;}
   .faq-item summary::after{
     content:'+'; font-size:1.3rem; color:var(--indigo); flex-shrink:0;
-    transition:transform .2s ease;
+    transition:transform .2s var(--ease-in-out);
   }
   .faq-item[open] summary::after{transform:rotate(45deg);}
   .faq-item p{padding-bottom:18px; color:var(--ink-soft); font-size:0.94rem; line-height:1.6;}
@@ -525,6 +542,12 @@
   .cf-status{margin-top:12px; font-size:0.88rem; min-height:1.2em;}
   .cf-status.ok{color:var(--lime);}
   .cf-status.err{color:#FFB4A3;}
+  .btn-spinner{
+    display:inline-block; width:14px; height:14px; vertical-align:-2px; margin-right:8px;
+    border:2px solid rgba(255,255,255,0.4); border-top-color:#fff; border-radius:50%;
+    animation:btn-spin 700ms linear infinite;
+  }
+  @keyframes btn-spin{ to{ transform:rotate(360deg); } }
 
   footer{
     padding:40px 0 60px;
@@ -884,7 +907,7 @@
       const btn = cf.querySelector('button[type="submit"]');
       const originalLabel = btn.textContent;
       btn.disabled = true;
-      btn.textContent = 'Envoi en cours...';
+      btn.innerHTML = '<span class="btn-spinner" aria-hidden="true"></span>Envoi en cours...';
       status.textContent = '';
       status.className = 'cf-status';
       try{
